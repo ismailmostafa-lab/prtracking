@@ -205,7 +205,10 @@ body{
 </select>
 </div>
 
-<div><label class="label">PR Amount</label><input class="input" data-field="PR Amount" type="number"></div>
+<div>
+  <label class="label">PR Amount</label>
+  <input class="input money" data-field="PR Amount" type="text">
+</div>
 
 <div><label class="label">PR Currency</label>
 <select class="select" data-field="PR Currency">
@@ -249,7 +252,11 @@ body{
 <div class="section-title">Customer Information</div>
 
 <div><label class="label">Customer Name</label><input class="input" data-field="Customer Name"></div>
-<div><label class="label">Customer PO Amount</label><input class="input" data-field="Customer PO Amount" type="number"></div>
+
+<div>
+  <label class="label">Customer PO Amount</label>
+  <input class="input money" data-field="Customer PO Amount" type="text">
+</div>
 
 <div><label class="label">PO Currency</label>
 <select class="select" data-field="PO Currency">
@@ -316,6 +323,18 @@ function formatDateForInput(value){
   return d.toISOString().split('T')[0];
 }
 
+function formatMoney(value){
+  value = value.replace(/,/g,'');
+  if(value === '' || isNaN(value)) return '';
+  return Number(value).toLocaleString('en-US',{maximumFractionDigits:2});
+}
+
+document.querySelectorAll('.money').forEach(el=>{
+  el.addEventListener('input',()=>{
+    el.value = formatMoney(el.value);
+  });
+});
+
 function showLoading(text){
   loadingText.innerText = text;
   loadingText.style.display = 'flex';
@@ -350,9 +369,8 @@ async function searchPR(){
   originalData = {...j.data};
   document.querySelectorAll('[data-field]').forEach(el=>{
     let val = j.data[el.dataset.field] || '';
-    if(el.type === 'date'){
-      val = formatDateForInput(val);
-    }
+    if(el.type === 'date') val = formatDateForInput(val);
+    if(el.classList.contains('money')) val = formatMoney(String(val));
     el.value = val;
   });
 }
@@ -366,7 +384,6 @@ function editMode(){
   scrollTop();
   formCard.classList.remove('readonly');
 
-  // LOCK PR ONLY IF IT HAS VALUE (EDIT MODE)
   if(prField.value){
     prField.classList.add('pr-locked');
   }
@@ -379,7 +396,10 @@ function editMode(){
 
 function cancelChanges(){
   document.querySelectorAll('[data-field]').forEach(el=>{
-    el.value = originalData[el.dataset.field] || '';
+    let val = originalData[el.dataset.field] || '';
+    if(el.type === 'date') val = formatDateForInput(val);
+    if(el.classList.contains('money')) val = formatMoney(String(val));
+    el.value = val;
   });
   resetView();
 }
