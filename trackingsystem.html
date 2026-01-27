@@ -275,6 +275,15 @@ Enterprise Project Management | Large & Mega Projects Unit
 </div>
 
 <script>
+/* ====== FIX: DEFINE DOM ELEMENTS ====== */
+const formCard  = document.getElementById('formCard');
+const editBtn   = document.getElementById('editBtn');
+const saveBtn   = document.getElementById('saveBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const deleteBtn = document.getElementById('deleteBtn');
+const searchBox = document.getElementById('searchPR');
+/* =================================== */
+
 const API = "https://script.google.com/macros/s/AKfycby0Su8Cd4k6mVnfdva6naQyOW3OHdN9rq3rO4ahqqV4pphWOzZWlN120tpOsPvZB073/exec";
 
 let originalData = {};
@@ -290,7 +299,7 @@ function clearForm(){
 
 /* ===== SEARCH ===== */
 async function searchPR(){
-  const pr = document.getElementById('searchPR').value;
+  const pr = searchBox.value;
   if(!pr) return alert('Enter PR Number');
 
   currentPR = pr;
@@ -315,7 +324,7 @@ async function searchPR(){
 /* ===== NEW ===== */
 function newPR(){
   currentPR = null;
-  document.getElementById('searchPR').value='';
+  searchBox.value='';
   clearForm();
   editMode();
 }
@@ -351,8 +360,8 @@ async function saveChanges(){
     })
   });
 
-  document.getElementById('searchPR').value = currentPR;
-  await searchPR();   // 🔁 رجوع لنفس البيان
+  searchBox.value = currentPR;
+  await searchPR();
 }
 
 /* ===== CANCEL ===== */
@@ -375,7 +384,7 @@ async function deletePR(){
   });
 
   currentPR = null;
-  document.getElementById('searchPR').value='';
+  searchBox.value='';
   clearForm();
   resetView();
 }
