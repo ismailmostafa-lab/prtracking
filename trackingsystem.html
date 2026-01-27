@@ -414,7 +414,69 @@ function resetView(){
   cancelBtn.classList.add('hidden');
   deleteBtn.classList.add('hidden');
 }
+
+/* =========================
+   SAVE PR  (ADDED)
+========================= */
+async function saveChanges(){
+  const payload = { action: 'savePR' };
+
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    let value = el.value;
+    if(el.classList.contains('money')){
+      value = value.replace(/,/g,'');
+    }
+    payload[el.dataset.field] = value;
+  });
+
+  showLoading('Saving...');
+  const r = await fetch(API,{
+    method:'POST',
+    body: JSON.stringify(payload)
+  });
+  const j = await r.json();
+  hideLoading();
+
+  if(j.status !== 'success'){
+    alert('Save failed');
+    return;
+  }
+
+  originalData = {...payload};
+  resetView();
+  alert('Saved successfully');
+}
+
+/* =========================
+   DELETE PR (ADDED)
+========================= */
+async function deletePR(){
+  if(!prField.value) return;
+
+  if(!confirm('Are you sure you want to delete this PR?')) return;
+
+  showLoading('Deleting...');
+  const r = await fetch(API,{
+    method:'POST',
+    body: JSON.stringify({
+      action:'deletePR',
+      PR: prField.value
+    })
+  });
+  const j = await r.json();
+  hideLoading();
+
+  if(j.status !== 'success'){
+    alert('Delete failed');
+    return;
+  }
+
+  clearForm();
+  resetView();
+  alert('PR deleted successfully');
+}
 </script>
+
 
 </body>
 </html>
