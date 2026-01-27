@@ -1,1 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PR Tracking System — Export</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  background:#f4f1fb;
+  font-family:'Cairo',sans-serif;
+}
+.header-box{
+  max-width:1300px;
+  margin:26px auto;
+  background:linear-gradient(135deg,#A666B0,#573B92);
+  padding:26px;
+  border-radius:22px;
+  text-align:center;
+  color:#fff;
+}
+.card{
+  max-width:600px;
+  margin:80px auto;
+  background:#fff;
+  border-radius:24px;
+  padding:60px;
+  text-align:center;
+}
+.export-btn{
+  padding:20px 60px;
+  font-size:20px;
+  border:none;
+  border-radius:22px;
+  background:linear-gradient(135deg,#A666B0,#573B92);
+  color:#fff;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header-box">
+  <div style="font-size:24px;font-weight:700">Enterprise Project Management</div>
+  <div style="font-size:15px;opacity:.9">PR Tracking System — Export</div>
+</div>
+
+<div class="card">
+  <button class="export-btn" onclick="exportData()">
+    Export Full Data
+  </button>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycby0Su8Cd4k6mVnfdva6naQyOW3OHdN9rq3rO4ahqqV4pphWOzZWlN120tpOsPvZB073/exec";
+
+async function exportData(){
+  const r = await fetch(API,{
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify({ action:'getAllPR' })
+  });
+
+  const j = await r.json();
+  if(j.status !== 'success'){
+    alert('Export failed');
+    return;
+  }
+
+  const data = j.data;
+
+  const ws = XLSX.utils.json_to_sheet(data,{cellDates:true});
+
+  Object.keys(ws).forEach(c=>{
+    if(c.startsWith('!')) return;
+    if(ws[c].v instanceof Date){
+      ws[c].t='d';
+      ws[c].z='yyyy-mm-dd';
+    }
+    if(typeof ws[c].v === 'number'){
+      ws[c].z='#,##0.00';
+    }
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'PR Data');
+  XLSX.writeFile(wb,'PR_Full_Data.xlsx');
+}
+</script>
+
+</body>
+</html>
