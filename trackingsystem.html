@@ -298,6 +298,15 @@ Enterprise Project Management | Large & Mega Projects Unit
 const API = "https://script.google.com/macros/s/AKfycby0Su8Cd4k6mVnfdva6naQyOW3OHdN9rq3rO4ahqqV4pphWOzZWlN120tpOsPvZB073/exec";
 let originalData = {};
 
+/* ===== FIX DATE DISPLAY ISSUE (ONLY ADDITION) ===== */
+function formatDateForInput(value){
+  if(!value) return '';
+  const d = new Date(value);
+  if(isNaN(d)) return '';
+  return d.toISOString().split('T')[0];
+}
+/* ================================================ */
+
 function showLoading(text){
   loadingText.innerText = text;
   loadingText.style.display = 'flex';
@@ -330,7 +339,11 @@ async function searchPR(){
 
   originalData = {...j.data};
   document.querySelectorAll('[data-field]').forEach(el=>{
-    el.value = j.data[el.dataset.field] || '';
+    let val = j.data[el.dataset.field] || '';
+    if(el.type === 'date'){
+      val = formatDateForInput(val);
+    }
+    el.value = val;
   });
 }
 
