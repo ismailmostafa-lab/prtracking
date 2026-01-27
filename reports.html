@@ -39,6 +39,11 @@ body{
   color:#fff;
   cursor:pointer;
 }
+.loading{
+  margin-top:20px;
+  font-weight:600;
+  display:none;
+}
 </style>
 </head>
 
@@ -53,12 +58,19 @@ body{
   <button class="export-btn" onclick="exportData()">
     Export Full Data
   </button>
+  <div class="loading" id="loading">Exporting… please wait</div>
 </div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbwdEELdIbHmxPGlRFtCqKZ-gcqxqoi4g1WLx0MnLwK3N2wlufS8_2C9NmUDiVnxTCk9/exec";
 
+function isDateField(key){
+  return /date|issued|sent|creation|approval/i.test(key);
+}
+
 async function exportData(){
+  document.getElementById('loading').style.display = 'block';
+
   const r = await fetch(API,{
     method:'POST',
     headers:{ 'Content-Type':'application/json' },
@@ -66,23 +78,41 @@ async function exportData(){
   });
 
   const j = await r.json();
+  document.getElementById('loading').style.display = 'none';
+
   if(j.status !== 'success'){
     alert('Export failed');
     return;
   }
 
-  const data = j.data;
+  // 🔥 Normalize data
+  const data = j.data.map(row=>{
+    const obj = {};
+    Object.keys(row).forEach(k=>{
+      let v = row[k];
+
+      // Convert date strings to Date
+      if(v && typeof v === 'string' && isDateField(k)){
+        const d = new Date(v);
+        obj[k] = isNaN(d) ? v : d;
+      } else if(!isNaN(v) && v !== ''){
+        obj[k] = Number(v);
+      } else {
+        obj[k] = v;
+      }
+    });
+    return obj;
+  });
 
   const ws = XLSX.utils.json_to_sheet(data,{cellDates:true});
 
+  // 🔥 Formatting
   Object.keys(ws).forEach(c=>{
     if(c.startsWith('!')) return;
+
     if(ws[c].v instanceof Date){
-      ws[c].t='d';
-      ws[c].z='yyyy-mm-dd';
-    }
-    if(typeof ws[c].v === 'number'){
-      ws[c].z='#,##0.00';
+      ws[c].t = 'd';
+      ws[c].z = 'yyyy-mm-dd';
     }
   });
 
