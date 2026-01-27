@@ -308,16 +308,93 @@ Enterprise Project Management | Large & Mega Projects Unit
 const API = "https://script.google.com/macros/s/AKfycby0Su8Cd4k6mVnfdva6naQyOW3OHdN9rq3rO4ahqqV4pphWOzZWlN120tpOsPvZB073/exec";
 let originalData = {};
 
-/* ================= EXISTING FUNCTIONS ================= */
-/* كل اللي عندك زي ما هو – بدون أي تغيير */
+/* ===== EXISTING FUNCTIONS ===== */
 
-/* ================= FIX: SAVE BUTTON ================= */
+function showLoading(text){
+  loadingText.innerText = text;
+  loadingText.style.display = 'flex';
+}
+function hideLoading(){
+  loadingText.style.display = 'none';
+}
+
+function scrollTop(){
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function clearForm(){
+  document.querySelectorAll('[data-field]').forEach(el=>el.value='');
+  prField.readOnly = false;
+  prField.classList.remove('pr-locked');
+}
+
+async function searchPR(){
+  const pr = document.getElementById('searchPR').value;
+  if(!pr) return alert('Enter PR Number');
+
+  showLoading('Loading...');
+  const r = await fetch(API,{
+    method:'POST',
+    body:JSON.stringify({action:'searchPR',PR:pr})
+  });
+  const j = await r.json();
+  hideLoading();
+
+  if(j.status!=='success') return alert('PR not found');
+
+  originalData = {...j.data};
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    el.value = j.data[el.dataset.field] || '';
+  });
+}
+
+function newPR(){
+  clearForm();
+  editMode();
+}
+
+function editMode(){
+  scrollTop();
+  formCard.classList.remove('readonly');
+
+  if(prField.value){
+    prField.readOnly = true;
+    prField.classList.add('pr-locked');
+  }
+
+  editBtn.classList.add('hidden');
+  saveBtn.classList.remove('hidden');
+  cancelBtn.classList.remove('hidden');
+  deleteBtn.classList.remove('hidden');
+}
+
+function cancelChanges(){
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    el.value = originalData[el.dataset.field] || '';
+  });
+  resetView();
+}
+
+function resetView(){
+  scrollTop();
+  formCard.classList.add('readonly');
+
+  prField.readOnly = false;
+  prField.classList.remove('pr-locked');
+
+  editBtn.classList.remove('hidden');
+  saveBtn.classList.add('hidden');
+  cancelBtn.classList.add('hidden');
+  deleteBtn.classList.add('hidden');
+}
+
+/* ===== FIXED BUTTONS ===== */
+
 async function saveChanges(){
   if(!confirm('Are you sure you want to save changes?')) return;
 
   showLoading('Saving...');
   const data = {};
-
   document.querySelectorAll('[data-field]').forEach(el=>{
     data[el.dataset.field] = el.value;
   });
@@ -327,7 +404,7 @@ async function saveChanges(){
     body:JSON.stringify({
       action:'savePR',
       user: localStorage.getItem('ID') || 'SYSTEM',
-      data: data
+      data:data
     })
   });
 
@@ -336,7 +413,6 @@ async function saveChanges(){
   resetView();
 }
 
-/* ================= FIX: DELETE BUTTON ================= */
 async function deletePR(){
   const pr = prField.value;
   if(!pr) return alert('No PR selected');
@@ -348,7 +424,7 @@ async function deletePR(){
     method:'POST',
     body:JSON.stringify({
       action:'deletePR',
-      PR: pr,
+      PR:pr,
       user: localStorage.getItem('ID') || 'SYSTEM'
     })
   });
@@ -358,7 +434,6 @@ async function deletePR(){
   resetView();
 }
 </script>
-
 
 </body>
 </html>
