@@ -2,53 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Enterprise Project Management — PR Tracking System</title>
+<title>Enterprise Project Management – PR Tracking System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
   --bg:#f4f1fb;
-  --card:#ffffff;
-  --primary:#7b4bb7;
-  --secondary:#5a3c8e;
-  --danger:#b3261e;
-  --border:#e0e0e0;
+  --card:#fff;
+  --primary:#6f4aa8;
+  --primary-dark:#54347d;
+  --burgundy:#7b1e3a;
+  --danger:#b42323;
 }
 
 *{box-sizing:border-box}
-
 body{
   margin:0;
-  background:var(--bg);
   font-family:'Cairo',sans-serif;
+  background:var(--bg);
 }
 
 /* HEADER */
 .header{
   max-width:1300px;
-  margin:24px auto;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  margin:30px auto;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
   padding:28px;
   border-radius:22px;
   text-align:center;
-  color:#fff;
 }
 .header h1{margin:0;font-size:26px}
 .header p{margin:6px 0 0;opacity:.9}
 
-/* SEARCH BAR */
-.search-wrap{
-  max-width:1300px;
-  margin:0 auto 20px;
-  padding:0 16px;
-}
+/* SEARCH */
 .search-box{
+  max-width:1300px;
+  margin:20px auto;
   background:#fff;
-  border-radius:18px;
   padding:18px;
+  border-radius:18px;
   display:flex;
   gap:12px;
 }
@@ -56,64 +51,53 @@ body{
   flex:1;
   padding:14px;
   border-radius:14px;
-  border:1px solid var(--border);
+  border:1px solid #ddd;
   font-size:15px;
 }
 .search-box button{
-  padding:14px 28px;
+  padding:14px 26px;
   border:none;
   border-radius:14px;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:#fff;
   cursor:pointer;
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
 }
 
-/* CARD */
+/* FORM */
 .container{
   max-width:1300px;
-  margin:0 auto 40px;
-  padding:0 16px;
+  margin:20px auto 40px;
 }
 .card{
-  background:var(--card);
-  border-radius:26px;
+  background:#fff;
+  border-radius:24px;
   padding:30px;
 }
-.readonly input,
-.readonly select{
-  background:#f1f1f1;
-  pointer-events:none;
-}
-
-/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
   gap:22px;
 }
-
-/* SECTION */
 .section{
   grid-column:1/-1;
   font-size:18px;
   font-weight:700;
-  color:#7b1e3a;
+  color:var(--burgundy);
   border-bottom:2px solid #e6cfd6;
   padding-bottom:6px;
   margin-top:10px;
 }
-
-/* INPUTS */
-label{
-  font-size:14px;
-  font-weight:700;
-}
+label{font-weight:700;font-size:14px}
 input,select{
   width:100%;
-  padding:14px;
+  padding:13px;
   border-radius:14px;
-  border:1px solid var(--border);
-  font-size:14px;
+  border:1px solid #ddd;
+}
+.readonly input,
+.readonly select{
+  background:#f2f2f2;
+  pointer-events:none;
 }
 .required{
   border:2px solid red !important;
@@ -129,21 +113,19 @@ input,select{
   border:none;
   border-radius:18px;
   font-size:16px;
-  margin:0 6px;
-  cursor:pointer;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
   color:#fff;
+  cursor:pointer;
+  margin:0 6px;
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
 }
-.actions .danger{
-  background:var(--danger);
-}
+.actions .danger{background:var(--danger)}
 .hidden{display:none}
 
 /* FOOTER */
 .footer{
   text-align:center;
+  color:#999;
   font-size:12px;
-  color:#888;
   margin-bottom:20px;
 }
 </style>
@@ -151,34 +133,28 @@ input,select{
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <h1>Enterprise Project Management</h1>
   <p>PR Tracking System</p>
 </div>
 
-<!-- SEARCH -->
-<div class="search-wrap">
-  <div class="search-box">
-    <input id="searchPR" type="number" placeholder="Enter PR Number">
-    <button id="searchBtn">Search</button>
-    <button onclick="newPR()">New</button>
-  </div>
+<div class="search-box">
+  <input id="searchPR" type="number" placeholder="Enter PR Number">
+  <button id="searchBtn">Search</button>
+  <button onclick="newPR()">New</button>
 </div>
 
-<!-- FORM -->
 <div class="container">
 <div class="card readonly" id="formCard">
 <div class="grid">
 
 <div class="section">PR Information</div>
 
-<div><label>PR</label><input data-field="PR" type="number"></div>
-<div><label>PR Creation</label><input data-field="PR Creation" type="date"></div>
-<div><label>PR Approval</label><input data-field="PR Approval" type="date"></div>
+<div><label>PR</label><input data-field="PR"></div>
+<div><label>PR Creation Date</label><input type="date" data-field="PR Creation Date"></div>
+<div><label>PR Approval Date</label><input type="date" data-field="PR Approval Date"></div>
 
-<div>
-<label>PR Status</label>
+<div><label>PR Status</label>
 <select data-field="PR Status">
 <option value="">-- Select --</option>
 <option>Approved</option>
@@ -187,10 +163,9 @@ input,select{
 </select>
 </div>
 
-<div><label>PR Amount</label><input data-field="PR Amount" type="number"></div>
+<div><label>PR Amount</label><input type="number" data-field="PR Amount"></div>
 
-<div>
-<label>PR Currency</label>
+<div><label>PR Currency</label>
 <select data-field="PR Currency">
 <option value="">-- Select --</option>
 <option>EGP</option>
@@ -202,8 +177,7 @@ input,select{
 <div><label>Description</label><input data-field="Description"></div>
 <div><label>Vendor Name</label><input data-field="Vendor Name"></div>
 
-<div>
-<label>Purchase Status</label>
+<div><label>Purchase Status</label>
 <select data-field="Purchase status">
 <option value="">-- Select --</option>
 <option>Rent</option>
@@ -211,8 +185,7 @@ input,select{
 </select>
 </div>
 
-<div>
-<label>Order Place</label>
+<div><label>Order Place</label>
 <select data-field="Order Place">
 <option value="">-- Select --</option>
 <option>TE data store</option>
@@ -221,12 +194,11 @@ input,select{
 </div>
 
 <div class="section">Management & Tracking</div>
+
 <div><label>Project Manager</label><input data-field="Project Manager"></div>
 <div><label>Account Manager</label><input data-field="Account Manager"></div>
 
-<div class="section">PR Status</div>
-<div>
-<label>Get Final Price</label>
+<div><label>Get Final Price</label>
 <select data-field="Get Final Price">
 <option value="">-- Select --</option>
 <option>Done</option>
@@ -234,18 +206,18 @@ input,select{
 </select>
 </div>
 
-<div><label>Final Price</label><input data-field="Final Price" type="date"></div>
-<div><label>Memo’s Sent</label><input data-field="Memo’s Sent" type="date"></div>
-<div><label>LOI Issued</label><input data-field="LOI Issued" type="date"></div>
-<div><label>PO Issued</label><input data-field="PO Issued" type="date"></div>
+<div><label>Final Price</label><input type="date" data-field="Final Price"></div>
+<div><label>Memo’s Sent</label><input type="date" data-field="Memo’s Sent"></div>
+<div><label>LOI Issued</label><input type="date" data-field="LOI Issued"></div>
+<div><label>PO Issued</label><input type="date" data-field="PO Issued"></div>
 
 </div>
 
 <div class="actions">
   <button id="editBtn">Edit</button>
   <button id="saveBtn" class="hidden">Save</button>
-  <button id="deleteBtn" class="hidden danger">Delete</button>
   <button id="cancelBtn" class="hidden">Cancel</button>
+  <button id="deleteBtn" class="hidden danger">Delete</button>
 </div>
 
 </div>
@@ -256,29 +228,28 @@ Enterprise Project Management | Large & Mega Projects Unit
 </div>
 
 <script>
-/* ===== CONFIG ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbwaSpcUwpMrRxxffp5k34rjt627-iAuv-OGuBvBK9Nm0kjvgE6TQKa1NQwNejfEOpDy/exec";
+/* 🔴 PUT YOUR WEB APP URL HERE */
+const API_URL = "PUT_YOUR_WEB_APP_URL_HERE";
 
-/* ===== ELEMENTS ===== */
 const formCard = document.getElementById("formCard");
-const searchBtn = document.getElementById("searchBtn");
 const searchInput = document.getElementById("searchPR");
+const searchBtn = document.getElementById("searchBtn");
 
 const editBtn = document.getElementById("editBtn");
 const saveBtn = document.getElementById("saveBtn");
-const deleteBtn = document.getElementById("deleteBtn");
 const cancelBtn = document.getElementById("cancelBtn");
+const deleteBtn = document.getElementById("deleteBtn");
 
 let currentPR = null;
 let originalData = {};
 
-/* ===== SEARCH ===== */
-searchBtn.onclick = async () => {
-  const pr = searchInput.value.trim();
-  if(!pr) return alert("Enter PR Number");
+/* SEARCH */
+searchBtn.onclick = async ()=>{
+  const pr = String(searchInput.value).trim();
+  if(!pr){ alert("Enter PR Number"); return; }
 
-  searchBtn.textContent = "Loading...";
-  searchBtn.disabled = true;
+  searchBtn.textContent="Loading...";
+  searchBtn.disabled=true;
 
   try{
     const r = await fetch(API_URL,{
@@ -286,38 +257,33 @@ searchBtn.onclick = async () => {
       body:JSON.stringify({action:"searchPR",PR:pr})
     });
     const j = await r.json();
+    if(j.status!=="success") throw "PR not found";
 
-    if(j.status !== "success") throw "PR not found";
-
-    currentPR = pr;
-    originalData = {...j.data};
+    currentPR=pr;
+    originalData={...j.data};
 
     document.querySelectorAll("[data-field]").forEach(el=>{
-      el.value = j.data[el.dataset.field] || "";
+      el.value=j.data[el.dataset.field]||"";
       el.classList.remove("required");
     });
 
     resetView();
-  }catch(e){
-    alert(e);
-  }finally{
-    searchBtn.textContent = "Search";
-    searchBtn.disabled = false;
+  }catch(e){ alert(e); }
+  finally{
+    searchBtn.textContent="Search";
+    searchBtn.disabled=false;
   }
 };
 
-/* ===== NEW ===== */
+/* NEW */
 function newPR(){
-  currentPR = null;
-  searchInput.value = "";
-  document.querySelectorAll("[data-field]").forEach(el=>{
-    el.value="";
-    el.classList.remove("required");
-  });
+  currentPR=null;
+  searchInput.value="";
+  document.querySelectorAll("[data-field]").forEach(el=>el.value="");
   editMode();
 }
 
-/* ===== EDIT ===== */
+/* EDIT */
 editBtn.onclick = editMode;
 function editMode(){
   formCard.classList.remove("readonly");
@@ -327,62 +293,56 @@ function editMode(){
   deleteBtn.classList.remove("hidden");
 }
 
-/* ===== SAVE ===== */
+/* SAVE */
 saveBtn.onclick = async ()=>{
-  let invalid = false;
-  const data = {};
-
+  let invalid=null;
   document.querySelectorAll("[data-field]").forEach(el=>{
     el.classList.remove("required");
     if(!el.value){
       el.classList.add("required");
-      invalid = true;
+      if(!invalid) invalid=el;
     }
-    data[el.dataset.field] = el.value;
   });
+  if(invalid){ alert("Fill all fields"); return; }
 
-  if(invalid) return alert("Please fill all required fields");
+  const data={};
+  document.querySelectorAll("[data-field]").forEach(el=>{
+    data[el.dataset.field]=el.value;
+  });
 
   await fetch(API_URL,{
     method:"POST",
-    body:JSON.stringify({
-      action:"savePR",
-      user:"WEB_USER",
-      data
-    })
+    body:JSON.stringify({action:"savePR",user:"SYSTEM",data})
   });
 
-  searchInput.value = data.PR;
+  searchInput.value=data.PR;
   searchBtn.click();
 };
 
-/* ===== DELETE ===== */
-deleteBtn.onclick = async ()=>{
-  if(!currentPR) return;
-  if(!confirm("Are you sure you want to delete this PR?")) return;
-
-  await fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"deletePR",
-      PR:currentPR,
-      user:"WEB_USER"
-    })
-  });
-
-  newPR();
-};
-
-/* ===== CANCEL ===== */
+/* CANCEL */
 cancelBtn.onclick = ()=>{
   document.querySelectorAll("[data-field]").forEach(el=>{
-    el.value = originalData[el.dataset.field] || "";
+    el.value=originalData[el.dataset.field]||"";
     el.classList.remove("required");
   });
   resetView();
 };
 
-/* ===== RESET ===== */
+/* DELETE */
+deleteBtn.onclick = async ()=>{
+  if(!currentPR) return;
+  if(!confirm("Delete this PR?")) return;
+
+  await fetch(API_URL,{
+    method:"POST",
+    body:JSON.stringify({action:"deletePR",PR:currentPR,user:"SYSTEM"})
+  });
+
+  newPR();
+  resetView();
+};
+
+/* RESET */
 function resetView(){
   formCard.classList.add("readonly");
   editBtn.classList.remove("hidden");
