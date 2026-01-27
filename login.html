@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<title>Enterprise Project Management — PR Tracking System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --we-purple:#6f2f90;
+  --muted:#6b6b6b;
+  --bg:#f4f1fb;
+  --card:#fff;
+  --accent:#00a3e0;
+
+  --btn-start:#A666B0; 
+  --btn-end:#573B92;
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{
+  margin:0;
+  background:var(--bg);
+  font-family:'Cairo',sans-serif;
+  animation:fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:none;}
+}
+
+/* ================= HEADER BOX ================= */
+.header-box{
+  width:100%;
+  max-width:420px;
+  margin:26px auto 0 auto;
+  background:linear-gradient(135deg, var(--btn-start), var(--btn-end));
+  padding:26px 16px 30px 16px;
+  border-radius:20px;
+  text-align:center;
+  color:#fff;
+  box-shadow:0 6px 20px rgba(111,47,144,0.22);
+}
+
+.header-title{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:0.2px;
+}
+
+.header-sub{
+  margin-top:6px;
+  font-size:15px;
+  opacity:0.92;
+}
+
+/* ================= LAYOUT ================= */
+.wrap{
+  display:flex;
+  justify-content:center;
+  padding:22px;
+  margin-top:20px;
+}
+
+.card{
+  width:100%;
+  max-width:420px;
+  background:var(--card);
+  border-radius:20px;
+  padding:26px;
+  box-shadow:0 8px 28px rgba(0,0,0,0.08);
+}
+
+/* ================= INPUTS ================= */
+.label{
+  font-size:14px;
+  color:var(--muted);
+  margin-top:14px;
+}
+
+.input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid #e0e0e0;
+  font-size:16px;
+  margin-top:6px;
+  transition:0.25s;
+}
+
+.input:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(0,163,224,0.35);
+}
+
+/* ================= BUTTON ================= */
+.btn{
+  width:100%;
+  margin-top:22px;
+  padding:16px;
+  font-size:17px;
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg, var(--btn-start), var(--btn-end));
+  box-shadow:
+    0 6px 14px rgba(111,47,144,0.30),
+    0 3px 6px rgba(0,0,0,0.18),
+    inset 0 2px 4px rgba(255,255,255,0.22);
+  cursor:pointer;
+  transition:0.18s ease;
+}
+
+.btn:active{
+  transform:scale(0.96);
+  box-shadow:
+    0 3px 8px rgba(111,47,144,0.25),
+    0 2px 4px rgba(0,0,0,0.15),
+    inset 0 1px 3px rgba(255,255,255,0.20);
+}
+
+/* ================= TEXT ================= */
+.msg{
+  height:22px;
+  text-align:center;
+  font-weight:600;
+  font-size:14px;
+  margin-top:12px;
+}
+
+.footer-note{
+  font-size:12px;
+  color:#9a9a9a;
+  margin-top:14px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header-box">
+  <div class="header-title">Enterprise Project Management</div>
+  <div class="header-sub">PR Tracking System</div>
+</div>
+
+<!-- CARD -->
+<main class="wrap">
+  <section class="card">
+
+    <label class="label" for="userid">ID</label>
+    <input id="userid" class="input" type="text" autocomplete="username" inputmode="numeric">
+
+    <label class="label" for="password">Password</label>
+    <input id="password" class="input" type="password" autocomplete="current-password">
+
+    <button class="btn" onclick="login()">Login</button>
+
+    <div id="msg" class="msg"></div>
+
+    <div class="footer-note">
+      Enterprise Project Management | Large & Mega Projects Unit
+    </div>
+
+  </section>
+</main>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbxvKCDcuXm8b632N_sMN6Sy_wTCSBKXPY-ZK4FVG7AgCEyPz50K0m1btEgNkEq80qb2/exec";
+
+if(localStorage.getItem('ID')) {
+  location.href = 'trackingsystem.html';
+}
+
+async function login(){
+  const id = document.getElementById('userid').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  const msg = document.getElementById('msg');
+
+  if(!id || !pass){
+    msg.style.color='red';
+    msg.textContent='Please fill all fields';
+    return;
+  }
+
+  msg.style.color='#666';
+  msg.textContent='Checking...';
+
+  try{
+    const r = await fetch(API,{
+      method:'POST',
+      body:JSON.stringify({
+        action:'login',
+        ID:id,
+        password:pass
+      })
+    });
+
+    const j = await r.json();
+
+    if(j.status === 'success'){
+      localStorage.setItem('ID', j.ID);
+      localStorage.setItem('name', j.name);
+      localStorage.setItem('role', j.role);
+
+      msg.style.color='green';
+      msg.textContent='Login successful';
+
+      setTimeout(()=> {
+        location.href='trackingsystem.html';
+      }, 300);
+
+    }else{
+      msg.style.color='red';
+      msg.textContent='Invalid ID or Password';
+    }
+
+  }catch(e){
+    msg.style.color='red';
+    msg.textContent='Connection Error';
+  }
+}
+</script>
+
+</body>
+</html>
