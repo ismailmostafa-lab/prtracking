@@ -223,7 +223,7 @@ async function login(){
 
     }else{
       msg.style.color='red';
-      msg.textContent='Invalid ID or Password';
+      msg.textContent = 'ERROR: ' + JSON.stringify(j);
     }
 
   }catch(e){
