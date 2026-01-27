@@ -17,6 +17,7 @@
   --btn-start:#A666B0;
   --btn-end:#573B92;
   --burgundy:#7b1e3a;
+  --danger:#9b1c1c;
 }
 
 *{box-sizing:border-box}
@@ -72,7 +73,7 @@ body{
   padding:30px;
 }
 
-/* SECTION HEADER — BURGUNDY */
+/* SECTION HEADER */
 .section-title{
   grid-column:1/-1;
   font-size:18px;
@@ -80,7 +81,7 @@ body{
   color:var(--burgundy);
   padding-bottom:8px;
   margin-top:14px;
-  border-bottom:2px solid #e6cfd6; /* نبيتي فاتح */
+  border-bottom:2px solid #e6cfd6;
 }
 
 /* GRID */
@@ -126,6 +127,9 @@ body{
   cursor:pointer;
   margin:0 6px;
 }
+.danger{
+  background:var(--danger);
+}
 .hidden{display:none}
 
 .footer{
@@ -145,11 +149,12 @@ body{
   <div class="header-sub">PR Tracking System</div>
 </div>
 
-<!-- SEARCH -->
+<!-- SEARCH + NEW -->
 <div class="search-wrap">
   <div class="search-box">
     <input id="searchPR" class="search-input" type="number" placeholder="Enter PR Number">
     <button class="search-btn" onclick="searchPR()">Search</button>
+    <button class="search-btn" onclick="newPR()">New</button>
   </div>
 </div>
 
@@ -261,6 +266,7 @@ body{
 <div class="actions">
   <button class="action-btn" id="editBtn" onclick="editMode()">Edit</button>
   <button class="action-btn hidden" id="saveBtn" onclick="saveChanges()">Save</button>
+  <button class="action-btn hidden danger" id="deleteBtn" onclick="deletePR()">Delete</button>
   <button class="action-btn hidden" id="cancelBtn" onclick="cancelChanges()">Cancel</button>
 </div>
 
@@ -277,6 +283,10 @@ let originalData = {};
 
 function scrollTop(){
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function clearForm(){
+  document.querySelectorAll('[data-field]').forEach(el=>el.value='');
 }
 
 async function searchPR(){
@@ -296,12 +306,18 @@ async function searchPR(){
   });
 }
 
+function newPR(){
+  clearForm();
+  editMode();
+}
+
 function editMode(){
   scrollTop();
   formCard.classList.remove('readonly');
   editBtn.classList.add('hidden');
   saveBtn.classList.remove('hidden');
   cancelBtn.classList.remove('hidden');
+  deleteBtn.classList.remove('hidden');
 }
 
 async function saveChanges(){
@@ -333,12 +349,32 @@ function cancelChanges(){
   resetView();
 }
 
+async function deletePR(){
+  const pr = document.querySelector('[data-field="PR"]').value;
+  if(!pr) return alert('No PR selected');
+
+  const ok = confirm('⚠️ Are you sure you want to delete this PR ?');
+  if(!ok) return;
+
+  await fetch(API,{
+    method:'POST',
+    body:JSON.stringify({
+      action:'deletePR',
+      PR: pr
+    })
+  });
+
+  clearForm();
+  resetView();
+}
+
 function resetView(){
   scrollTop();
   formCard.classList.add('readonly');
   editBtn.classList.remove('hidden');
   saveBtn.classList.add('hidden');
   cancelBtn.classList.add('hidden');
+  deleteBtn.classList.add('hidden');
 }
 </script>
 
