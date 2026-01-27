@@ -115,11 +115,10 @@ body{
   pointer-events:none;
 }
 
-/* PR DIMMED (ONLY ADDITION) */
+/* PR DIMMED (EDIT ONLY) */
 .pr-locked{
   background:#f1f1f1 !important;
   color:#777 !important;
-  pointer-events:none;
 }
 
 /* ACTIONS */
@@ -330,6 +329,7 @@ function scrollTop(){
 
 function clearForm(){
   document.querySelectorAll('[data-field]').forEach(el=>el.value='');
+  prField.readOnly = false;
   prField.classList.remove('pr-locked');
 }
 
@@ -366,8 +366,8 @@ function editMode(){
   scrollTop();
   formCard.classList.remove('readonly');
 
-  // LOCK PR ONLY IF IT HAS VALUE (EDIT MODE)
   if(prField.value){
+    prField.readOnly = true;
     prField.classList.add('pr-locked');
   }
 
@@ -387,6 +387,8 @@ function cancelChanges(){
 function resetView(){
   scrollTop();
   formCard.classList.add('readonly');
+
+  prField.readOnly = false;
   prField.classList.remove('pr-locked');
 
   editBtn.classList.remove('hidden');
