@@ -435,19 +435,21 @@ async function saveChanges(){
 
   document.querySelectorAll('[data-field]').forEach(el=>{
     let value = el.value;
-
     if(el.classList.contains('money')){
       value = value.replace(/,/g,'');
     }
-
     payload.data[el.dataset.field] = value;
   });
 
   showLoading('Saving...');
   const r = await fetch(API,{
     method:'POST',
+    headers:{
+      'Content-Type':'application/json'   // 🔥 FIX الحقيقي
+    },
     body: JSON.stringify(payload)
   });
+
   const j = await r.json();
   hideLoading();
 
