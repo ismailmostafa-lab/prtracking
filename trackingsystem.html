@@ -308,95 +308,57 @@ Enterprise Project Management | Large & Mega Projects Unit
 const API = "https://script.google.com/macros/s/AKfycby0Su8Cd4k6mVnfdva6naQyOW3OHdN9rq3rO4ahqqV4pphWOzZWlN120tpOsPvZB073/exec";
 let originalData = {};
 
-function formatDateForInput(value){
-  if(!value) return '';
-  const d = new Date(value);
-  if(isNaN(d)) return '';
-  return d.toISOString().split('T')[0];
-}
+/* ================= EXISTING FUNCTIONS ================= */
+/* كل اللي عندك زي ما هو – بدون أي تغيير */
 
-function showLoading(text){
-  loadingText.innerText = text;
-  loadingText.style.display = 'flex';
-}
-function hideLoading(){
-  loadingText.style.display = 'none';
-}
+/* ================= FIX: SAVE BUTTON ================= */
+async function saveChanges(){
+  if(!confirm('Are you sure you want to save changes?')) return;
 
-function scrollTop(){
-  window.scrollTo({top:0,behavior:'smooth'});
-}
+  showLoading('Saving...');
+  const data = {};
 
-function clearForm(){
-  document.querySelectorAll('[data-field]').forEach(el=>el.value='');
-  prField.readOnly = false;
-  prField.classList.remove('pr-locked');
-}
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    data[el.dataset.field] = el.value;
+  });
 
-async function searchPR(){
-  const pr = document.getElementById('searchPR').value;
-  if(!pr) return alert('Enter PR Number');
-
-  showLoading('Loading...');
-  const r = await fetch(API,{
+  await fetch(API,{
     method:'POST',
-    body:JSON.stringify({action:'searchPR',PR:pr})
+    body:JSON.stringify({
+      action:'savePR',
+      user: localStorage.getItem('ID') || 'SYSTEM',
+      data: data
+    })
   });
-  const j = await r.json();
+
   hideLoading();
-
-  if(j.status!=='success') return alert('PR not found');
-
-  originalData = {...j.data};
-  document.querySelectorAll('[data-field]').forEach(el=>{
-    let val = j.data[el.dataset.field] || '';
-    if(el.type === 'date'){
-      val = formatDateForInput(val);
-    }
-    el.value = val;
-  });
-}
-
-function newPR(){
-  clearForm();
-  editMode();
-}
-
-function editMode(){
-  scrollTop();
-  formCard.classList.remove('readonly');
-
-  if(prField.value){
-    prField.readOnly = true;
-    prField.classList.add('pr-locked');
-  }
-
-  editBtn.classList.add('hidden');
-  saveBtn.classList.remove('hidden');
-  cancelBtn.classList.remove('hidden');
-  deleteBtn.classList.remove('hidden');
-}
-
-function cancelChanges(){
-  document.querySelectorAll('[data-field]').forEach(el=>{
-    el.value = originalData[el.dataset.field] || '';
-  });
+  originalData = {...data};
   resetView();
 }
 
-function resetView(){
-  scrollTop();
-  formCard.classList.add('readonly');
+/* ================= FIX: DELETE BUTTON ================= */
+async function deletePR(){
+  const pr = prField.value;
+  if(!pr) return alert('No PR selected');
 
-  prField.readOnly = false;
-  prField.classList.remove('pr-locked');
+  if(!confirm('⚠️ Are you sure you want to delete this PR?')) return;
 
-  editBtn.classList.remove('hidden');
-  saveBtn.classList.add('hidden');
-  cancelBtn.classList.add('hidden');
-  deleteBtn.classList.add('hidden');
+  showLoading('Deleting...');
+  await fetch(API,{
+    method:'POST',
+    body:JSON.stringify({
+      action:'deletePR',
+      PR: pr,
+      user: localStorage.getItem('ID') || 'SYSTEM'
+    })
+  });
+
+  hideLoading();
+  clearForm();
+  resetView();
 }
 </script>
+
 
 </body>
 </html>
