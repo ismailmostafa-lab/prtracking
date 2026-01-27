@@ -16,6 +16,7 @@
   --accent:#00a3e0;
   --btn-start:#A666B0;
   --btn-end:#573B92;
+  --burgundy:#7b1e3a;
 }
 
 *{box-sizing:border-box}
@@ -70,17 +71,30 @@ body{
   border-radius:24px;
   padding:30px;
 }
+
+/* SECTION HEADER — BURGUNDY */
+.section-title{
+  grid-column:1/-1;
+  font-size:18px;
+  font-weight:700;
+  color:var(--burgundy);
+  padding-bottom:8px;
+  margin-top:14px;
+  border-bottom:2px solid #e6cfd6; /* نبيتي فاتح */
+}
+
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
   gap:22px;
 }
 
-/* 🔥 LABEL UPDATED */
+/* LABEL */
 .label{
   font-size:14px;
-  font-weight:700;       /* BOLD */
-  color:#000;            /* BLACK */
+  font-weight:700;
+  color:#000;
   margin-bottom:6px;
 }
 
@@ -112,7 +126,6 @@ body{
   cursor:pointer;
   margin:0 6px;
 }
-
 .hidden{display:none}
 
 .footer{
@@ -135,8 +148,8 @@ body{
 <!-- SEARCH -->
 <div class="search-wrap">
   <div class="search-box">
-    <input class="search-input" type="number" placeholder="Enter PR Number">
-    <button class="search-btn">Search</button>
+    <input id="searchPR" class="search-input" type="number" placeholder="Enter PR Number">
+    <button class="search-btn" onclick="searchPR()">Search</button>
   </div>
 </div>
 
@@ -145,69 +158,103 @@ body{
 <div class="card readonly" id="formCard">
 <div class="grid">
 
-<div><label class="label">PR</label><input class="input" type="number"></div>
-<div><label class="label">PR Creation Date</label><input class="input" type="date"></div>
-<div><label class="label">PR Approval Date</label><input class="input" type="date"></div>
+<div class="section-title">PR Information</div>
+
+<div><label class="label">PR</label><input class="input" data-field="PR" type="number"></div>
+<div><label class="label">PR Creation Date</label><input class="input" data-field="PR Creation Date" type="date"></div>
+<div><label class="label">PR Approval Date</label><input class="input" data-field="PR Approval Date" type="date"></div>
 
 <div><label class="label">PR Status</label>
-<select class="select"><option>Approved</option><option>In Process</option><option>Cancelled</option></select>
-</div>
-
-<div><label class="label">PR Amount</label><input class="input" type="number"></div>
-
-<div><label class="label">PR Currency</label>
-<select class="select"><option>EGP</option><option>USD</option></select>
-</div>
-
-<div><label class="label">Buyer</label><input class="input"></div>
-<div><label class="label">Description</label><input class="input"></div>
-<div><label class="label">Vendor Name</label><input class="input"></div>
-
-<div><label class="label">Purchase Status</label>
-<select class="select"><option>Rent</option><option>Sale</option></select>
-</div>
-
-<div><label class="label">Order Place</label>
-<select class="select"><option>TE data store</option><option>Customer store</option></select>
-</div>
-
-<div><label class="label">ECRM Order</label><input class="input" type="number"></div>
-
-<div><label class="label">Order Type</label>
-<select class="select"><option>HW</option><option>License</option><option>Cross connection</option></select>
-</div>
-
-<div><label class="label">Quantity / Speed</label><input class="input"></div>
-<div><label class="label">Customer Name</label><input class="input"></div>
-<div><label class="label">Customer PO Amount</label><input class="input" type="number"></div>
-
-<div><label class="label">PO Currency</label>
-<select class="select"><option>EGP</option><option>USD</option></select>
-</div>
-
-<div><label class="label">Customer PO</label><input class="input" type="number"></div>
-<div><label class="label">Payment Status Description</label><input class="input"></div>
-
-<div><label class="label">Customer Type</label>
-<select class="select">
-<option>BS</option>
-<option>KAM</option>
-<option>TE International</option>
-<option>Global Partner</option>
+<select class="select" data-field="PR Status">
+  <option>Approved</option>
+  <option>In Process</option>
+  <option>Cancelled</option>
 </select>
 </div>
 
-<div><label class="label">Project Manager</label><input class="input"></div>
-<div><label class="label">Account Manager</label><input class="input"></div>
+<div><label class="label">PR Amount</label><input class="input" data-field="PR Amount" type="number"></div>
 
-<div><label class="label">Get Final Price</label>
-<select class="select"><option>Pending</option><option>Done</option></select>
+<div><label class="label">PR Currency</label>
+<select class="select" data-field="PR Currency">
+  <option>EGP</option>
+  <option>USD</option>
+</select>
 </div>
 
-<div><label class="label">Final Price</label><input class="input" type="date"></div>
-<div><label class="label">Memo’s Sent</label><input class="input" type="date"></div>
-<div><label class="label">LOI Issued</label><input class="input" type="date"></div>
-<div><label class="label">PO Issued</label><input class="input" type="date"></div>
+<div><label class="label">Buyer</label><input class="input" data-field="Buyer"></div>
+<div><label class="label">Description</label><input class="input" data-field="Description"></div>
+<div><label class="label">Vendor Name</label><input class="input" data-field="Vendor Name"></div>
+
+<div><label class="label">Purchase Status</label>
+<select class="select" data-field="Purchase Status">
+  <option>Rent</option>
+  <option>Sale</option>
+</select>
+</div>
+
+<div><label class="label">Order Place</label>
+<select class="select" data-field="Order Place">
+  <option>TE data store</option>
+  <option>Customer store</option>
+</select>
+</div>
+
+<div class="section-title">ECRM Information</div>
+
+<div><label class="label">ECRM Order</label><input class="input" data-field="ECRM Order" type="number"></div>
+
+<div><label class="label">Order Type</label>
+<select class="select" data-field="Order Type">
+  <option>HW</option>
+  <option>License</option>
+  <option>Cross connection</option>
+</select>
+</div>
+
+<div><label class="label">Quantity / Speed</label><input class="input" data-field="Quantity / Speed"></div>
+
+<div class="section-title">Customer Information</div>
+
+<div><label class="label">Customer Name</label><input class="input" data-field="Customer Name"></div>
+<div><label class="label">Customer PO Amount</label><input class="input" data-field="Customer PO Amount" type="number"></div>
+
+<div><label class="label">PO Currency</label>
+<select class="select" data-field="PO Currency">
+  <option>EGP</option>
+  <option>USD</option>
+</select>
+</div>
+
+<div><label class="label">Customer PO</label><input class="input" data-field="Customer PO" type="number"></div>
+<div><label class="label">Payment Status Description</label><input class="input" data-field="Payment Status Description"></div>
+
+<div><label class="label">Customer Type</label>
+<select class="select" data-field="Customer Type">
+  <option>BS</option>
+  <option>KAM</option>
+  <option>TE International</option>
+  <option>Global Partner</option>
+</select>
+</div>
+
+<div class="section-title">Management & Tracking</div>
+
+<div><label class="label">Project Manager</label><input class="input" data-field="Project Manager"></div>
+<div><label class="label">Account Manager</label><input class="input" data-field="Account Manager"></div>
+
+<div class="section-title">PR Status</div>
+
+<div><label class="label">Get Final Price</label>
+<select class="select" data-field="Get Final Price">
+  <option>Pending</option>
+  <option>Done</option>
+</select>
+</div>
+
+<div><label class="label">Final Price</label><input class="input" data-field="Final Price" type="date"></div>
+<div><label class="label">Memo’s Sent</label><input class="input" data-field="Memo’s Sent" type="date"></div>
+<div><label class="label">LOI Issued</label><input class="input" data-field="LOI Issued" type="date"></div>
+<div><label class="label">PO Issued</label><input class="input" data-field="PO Issued" type="date"></div>
 
 </div>
 
@@ -225,34 +272,73 @@ Enterprise Project Management | Large & Mega Projects Unit
 </div>
 
 <script>
+const API = "https://script.google.com/macros/s/AKfycbzpcvD-281lsb1KYJRQHJtzVhvlAY90P2Flk-CEN5aN2u_zbgq-Og4ilMqG0ze1Vats/exec";
+let originalData = {};
+
 function scrollTop(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function editMode(){
-  scrollTop();
-  document.getElementById('formCard').classList.remove('readonly');
-  document.getElementById('editBtn').classList.add('hidden');
-  document.getElementById('saveBtn').classList.remove('hidden');
-  document.getElementById('cancelBtn').classList.remove('hidden');
+async function searchPR(){
+  const pr = document.getElementById('searchPR').value;
+  if(!pr) return alert('Enter PR Number');
+
+  const r = await fetch(API,{
+    method:'POST',
+    body:JSON.stringify({action:'searchPR',PR:pr})
+  });
+  const j = await r.json();
+  if(j.status!=='success') return alert('PR not found');
+
+  originalData = {...j.data};
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    el.value = j.data[el.dataset.field] || '';
+  });
 }
 
-function saveChanges(){
+function editMode(){
+  scrollTop();
+  formCard.classList.remove('readonly');
+  editBtn.classList.add('hidden');
+  saveBtn.classList.remove('hidden');
+  cancelBtn.classList.remove('hidden');
+}
+
+async function saveChanges(){
   const ok = confirm('Are you sure you want to save new changes ?');
   if(!ok) return;
+
+  const data = {};
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    data[el.dataset.field] = el.value;
+  });
+
+  await fetch(API,{
+    method:'POST',
+    body:JSON.stringify({
+      action:'savePR',
+      user: localStorage.getItem('ID'),
+      data
+    })
+  });
+
+  originalData = {...data};
   resetView();
 }
 
 function cancelChanges(){
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    el.value = originalData[el.dataset.field] || '';
+  });
   resetView();
 }
 
 function resetView(){
   scrollTop();
-  document.getElementById('formCard').classList.add('readonly');
-  document.getElementById('editBtn').classList.remove('hidden');
-  document.getElementById('saveBtn').classList.add('hidden');
-  document.getElementById('cancelBtn').classList.add('hidden');
+  formCard.classList.add('readonly');
+  editBtn.classList.remove('hidden');
+  saveBtn.classList.add('hidden');
+  cancelBtn.classList.add('hidden');
 }
 </script>
 
