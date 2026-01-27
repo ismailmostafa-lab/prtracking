@@ -36,7 +36,7 @@ html,body{
 /* ================= HEADER BOX ================= */
 .header-box{
   width:100%;
-  max-width:420px;
+  max-width:900px;
   margin:26px auto 0 auto;
   background:linear-gradient(135deg, var(--btn-start), var(--btn-end));
   padding:26px 16px 30px 16px;
@@ -44,6 +44,7 @@ html,body{
   text-align:center;
   color:#fff;
   box-shadow:0 6px 20px rgba(111,47,144,0.22);
+  position:relative;
 }
 
 .header-title{
@@ -58,6 +59,31 @@ html,body{
   opacity:0.92;
 }
 
+.user-info{
+  position:absolute;
+  top:16px;
+  right:16px;
+  font-size:13px;
+  opacity:0.9;
+  text-align:right;
+}
+
+.logout-btn{
+  background:rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.3);
+  color:#fff;
+  padding:6px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:12px;
+  margin-top:6px;
+  transition:0.2s;
+}
+
+.logout-btn:hover{
+  background:rgba(255,255,255,0.3);
+}
+
 /* ================= LAYOUT ================= */
 .wrap{
   display:flex;
@@ -68,45 +94,73 @@ html,body{
 
 .card{
   width:100%;
-  max-width:420px;
+  max-width:900px;
   background:var(--card);
   border-radius:20px;
   padding:26px;
   box-shadow:0 8px 28px rgba(0,0,0,0.08);
 }
 
+/* ================= FORM GRID ================= */
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:16px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+}
+
+.form-group.full-width{
+  grid-column:1 / -1;
+}
+
 /* ================= INPUTS ================= */
 .label{
   font-size:14px;
   color:var(--muted);
-  margin-top:14px;
+  margin-bottom:6px;
+  font-weight:600;
 }
 
-.input{
+.input, .select, .textarea{
   width:100%;
-  padding:14px 16px;
-  border-radius:12px;
+  padding:12px 14px;
+  border-radius:10px;
   border:1px solid #e0e0e0;
-  font-size:16px;
-  margin-top:6px;
+  font-size:15px;
+  font-family:'Cairo',sans-serif;
   transition:0.25s;
 }
 
-.input:focus{
+.input:focus, .select:focus, .textarea:focus{
   outline:none;
   border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(0,163,224,0.35);
+  box-shadow:0 0 0 3px rgba(0,163,224,0.25);
 }
 
-/* ================= BUTTON ================= */
+.textarea{
+  min-height:80px;
+  resize:vertical;
+}
+
+/* ================= BUTTONS ================= */
+.btn-group{
+  display:flex;
+  gap:12px;
+  margin-top:26px;
+}
+
 .btn{
-  width:100%;
-  margin-top:22px;
-  padding:16px;
-  font-size:17px;
+  flex:1;
+  padding:14px;
+  font-size:16px;
   color:#fff;
   border:none;
-  border-radius:14px;
+  border-radius:12px;
   background:linear-gradient(135deg, var(--btn-start), var(--btn-end));
   box-shadow:
     0 6px 14px rgba(111,47,144,0.30),
@@ -114,6 +168,7 @@ html,body{
     inset 0 2px 4px rgba(255,255,255,0.22);
   cursor:pointer;
   transition:0.18s ease;
+  font-weight:600;
 }
 
 .btn:active{
@@ -124,20 +179,45 @@ html,body{
     inset 0 1px 3px rgba(255,255,255,0.20);
 }
 
-/* ================= TEXT ================= */
+.btn-secondary{
+  background:linear-gradient(135deg, #808080, #606060);
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.20),
+    0 3px 6px rgba(0,0,0,0.12),
+    inset 0 2px 4px rgba(255,255,255,0.15);
+}
+
+/* ================= MESSAGE ================= */
 .msg{
   height:22px;
   text-align:center;
   font-weight:600;
   font-size:14px;
-  margin-top:12px;
+  margin-top:14px;
 }
 
 .footer-note{
   font-size:12px;
   color:#9a9a9a;
-  margin-top:14px;
+  margin-top:18px;
   text-align:center;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px){
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+  
+  .btn-group{
+    flex-direction:column;
+  }
+  
+  .user-info{
+    position:static;
+    margin-top:12px;
+    text-align:center;
+  }
 }
 </style>
 </head>
@@ -146,6 +226,10 @@ html,body{
 
 <!-- HEADER -->
 <div class="header-box">
+  <div class="user-info">
+    <div id="userName">Welcome, User</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
   <div class="header-title">Enterprise Project Management</div>
   <div class="header-sub">PR Tracking System</div>
 </div>
@@ -154,16 +238,215 @@ html,body{
 <main class="wrap">
   <section class="card">
 
-    <!-- ✅ FORM added -->
-    <form onsubmit="login(); return false;">
+    <form id="prForm" onsubmit="submitPR(); return false;">
 
-      <label class="label" for="userid">ID</label>
-      <input id="userid" class="input" type="text" autocomplete="username" inputmode="numeric">
+      <div class="form-grid">
 
-      <label class="label" for="password">Password</label>
-      <input id="password" class="input" type="password" autocomplete="current-password">
+        <!-- PR Number -->
+        <div class="form-group">
+          <label class="label" for="prNumber">PR</label>
+          <input id="prNumber" class="input" type="number" required>
+        </div>
 
-      <button class="btn" type="submit">Login</button>
+        <!-- PR Creation Date -->
+        <div class="form-group">
+          <label class="label" for="prCreation">PR Creation</label>
+          <input id="prCreation" class="input" type="date" required>
+        </div>
+
+        <!-- PR Approval Date -->
+        <div class="form-group">
+          <label class="label" for="prApproval">PR Approval</label>
+          <input id="prApproval" class="input" type="date">
+        </div>
+
+        <!-- PR Status -->
+        <div class="form-group">
+          <label class="label" for="prStatus">PR Status</label>
+          <select id="prStatus" class="select" required>
+            <option value="">Select Status</option>
+            <option value="Approved">Approved</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <!-- PR Amount -->
+        <div class="form-group">
+          <label class="label" for="prAmount">PR Amount</label>
+          <input id="prAmount" class="input" type="number" step="0.01" required>
+        </div>
+
+        <!-- PR Currency -->
+        <div class="form-group">
+          <label class="label" for="prCurrency">PR Currency</label>
+          <select id="prCurrency" class="select" required>
+            <option value="">Select Currency</option>
+            <option value="EGP">EGP</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+
+        <!-- Buyer -->
+        <div class="form-group">
+          <label class="label" for="buyer">Buyer</label>
+          <input id="buyer" class="input" type="text">
+        </div>
+
+        <!-- Vendor Name -->
+        <div class="form-group">
+          <label class="label" for="vendorName">Vendor Name</label>
+          <input id="vendorName" class="input" type="text">
+        </div>
+
+        <!-- Purchase Status -->
+        <div class="form-group">
+          <label class="label" for="purchaseStatus">Purchase Status</label>
+          <select id="purchaseStatus" class="select">
+            <option value="">Select Status</option>
+            <option value="Rent">Rent</option>
+            <option value="Sale">Sale</option>
+          </select>
+        </div>
+
+        <!-- Order Place -->
+        <div class="form-group">
+          <label class="label" for="orderPlace">Order Place</label>
+          <select id="orderPlace" class="select">
+            <option value="">Select Order Place</option>
+            <option value="TE data store">TE data store</option>
+            <option value="customer store">customer store</option>
+          </select>
+        </div>
+
+        <!-- ECRM Order -->
+        <div class="form-group">
+          <label class="label" for="ecrmOrder">ECRM Order</label>
+          <input id="ecrmOrder" class="input" type="number">
+        </div>
+
+        <!-- Order Type -->
+        <div class="form-group">
+          <label class="label" for="orderType">Order Type</label>
+          <select id="orderType" class="select">
+            <option value="">Select Type</option>
+            <option value="HW">HW</option>
+            <option value="License">License</option>
+            <option value="Cross connection">Cross connection</option>
+          </select>
+        </div>
+
+        <!-- Quantity / Speed -->
+        <div class="form-group">
+          <label class="label" for="quantitySpeed">Quantity / Speed</label>
+          <input id="quantitySpeed" class="input" type="text">
+        </div>
+
+        <!-- Customer Name -->
+        <div class="form-group">
+          <label class="label" for="customerName">Customer Name</label>
+          <input id="customerName" class="input" type="text">
+        </div>
+
+        <!-- Customer PO Amount -->
+        <div class="form-group">
+          <label class="label" for="customerPoAmount">Customer PO Amount</label>
+          <input id="customerPoAmount" class="input" type="number" step="0.01">
+        </div>
+
+        <!-- PO Currency -->
+        <div class="form-group">
+          <label class="label" for="poCurrency">PO Currency</label>
+          <select id="poCurrency" class="select">
+            <option value="">Select Currency</option>
+            <option value="EGP">EGP</option>
+            <option value="USD">USD</option>
+          </select>
+        </div>
+
+        <!-- Customer PO -->
+        <div class="form-group">
+          <label class="label" for="customerPo">Customer PO</label>
+          <input id="customerPo" class="input" type="number">
+        </div>
+
+        <!-- Customer Type -->
+        <div class="form-group">
+          <label class="label" for="customerType">Customer Type</label>
+          <select id="customerType" class="select">
+            <option value="">Select Type</option>
+            <option value="BS">BS</option>
+            <option value="KAM">KAM</option>
+            <option value="TE International">TE International</option>
+            <option value="Global Partner">Global Partner</option>
+          </select>
+        </div>
+
+        <!-- Project Manager -->
+        <div class="form-group">
+          <label class="label" for="projectManager">Project Manager</label>
+          <input id="projectManager" class="input" type="text">
+        </div>
+
+        <!-- Account Manager -->
+        <div class="form-group">
+          <label class="label" for="accountManager">Account Manager</label>
+          <input id="accountManager" class="input" type="text">
+        </div>
+
+        <!-- Get Final Price -->
+        <div class="form-group">
+          <label class="label" for="getFinalPrice">Get Final Price</label>
+          <select id="getFinalPrice" class="select">
+            <option value="">Select Status</option>
+            <option value="Done">Done</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+
+        <!-- Final Price Date -->
+        <div class="form-group">
+          <label class="label" for="finalPrice">Final Price</label>
+          <input id="finalPrice" class="input" type="date">
+        </div>
+
+        <!-- Memo Sent -->
+        <div class="form-group">
+          <label class="label" for="memoSent">Memo Sent</label>
+          <input id="memoSent" class="input" type="date">
+        </div>
+
+        <!-- LOI Issued -->
+        <div class="form-group">
+          <label class="label" for="loiIssued">LOI Issued</label>
+          <input id="loiIssued" class="input" type="date">
+        </div>
+
+        <!-- PO Issued -->
+        <div class="form-group">
+          <label class="label" for="poIssued">PO Issued</label>
+          <input id="poIssued" class="input" type="date">
+        </div>
+
+        <!-- Description - Full Width -->
+        <div class="form-group full-width">
+          <label class="label" for="description">Description</label>
+          <textarea id="description" class="textarea"></textarea>
+        </div>
+
+        <!-- Payment Status Description - Full Width -->
+        <div class="form-group full-width">
+          <label class="label" for="paymentStatus">Payment Status Description</label>
+          <textarea id="paymentStatus" class="textarea"></textarea>
+        </div>
+
+      </div>
+
+      <!-- Buttons -->
+      <div class="btn-group">
+        <button class="btn btn-secondary" type="button" onclick="resetForm()">Reset</button>
+        <button class="btn" type="submit">Submit PR</button>
+      </div>
 
     </form>
 
@@ -179,56 +462,92 @@ html,body{
 <script>
 const API = "https://script.google.com/macros/s/AKfycbxGFPDjZSK1ElUrTvK9y4wc-15ktrZP5sRTXCmK6SHeOuyZpkP2Z1ILP4Gr4W86WTxQ/exec";
 
-if(localStorage.getItem('ID')) {
-  location.href = 'trackingsystem.html';
+// Check if user is logged in
+if(!localStorage.getItem('ID')) {
+  location.href = 'index.html';
 }
 
-async function login(){
-  const id = document.getElementById('userid').value.trim();
-  const pass = document.getElementById('password').value.trim();
-  const msg = document.getElementById('msg');
+// Display user name
+document.getElementById('userName').textContent = 'Welcome, ' + (localStorage.getItem('name') || 'User');
 
-  if(!id || !pass){
-    msg.style.color='red';
-    msg.textContent='Please fill all fields';
-    return;
-  }
+// Logout function
+function logout(){
+  localStorage.clear();
+  location.href = 'index.html';
+}
+
+// Reset form
+function resetForm(){
+  document.getElementById('prForm').reset();
+  document.getElementById('msg').textContent = '';
+}
+
+// Submit PR
+async function submitPR(){
+  const msg = document.getElementById('msg');
+  
+  // Collect form data
+  const formData = {
+    action: 'addPR',
+    userID: localStorage.getItem('ID'),
+    prNumber: document.getElementById('prNumber').value,
+    prCreation: document.getElementById('prCreation').value,
+    prApproval: document.getElementById('prApproval').value,
+    prStatus: document.getElementById('prStatus').value,
+    prAmount: document.getElementById('prAmount').value,
+    prCurrency: document.getElementById('prCurrency').value,
+    buyer: document.getElementById('buyer').value,
+    description: document.getElementById('description').value,
+    vendorName: document.getElementById('vendorName').value,
+    purchaseStatus: document.getElementById('purchaseStatus').value,
+    orderPlace: document.getElementById('orderPlace').value,
+    ecrmOrder: document.getElementById('ecrmOrder').value,
+    orderType: document.getElementById('orderType').value,
+    quantitySpeed: document.getElementById('quantitySpeed').value,
+    customerName: document.getElementById('customerName').value,
+    customerPoAmount: document.getElementById('customerPoAmount').value,
+    poCurrency: document.getElementById('poCurrency').value,
+    customerPo: document.getElementById('customerPo').value,
+    paymentStatus: document.getElementById('paymentStatus').value,
+    customerType: document.getElementById('customerType').value,
+    projectManager: document.getElementById('projectManager').value,
+    accountManager: document.getElementById('accountManager').value,
+    getFinalPrice: document.getElementById('getFinalPrice').value,
+    finalPrice: document.getElementById('finalPrice').value,
+    memoSent: document.getElementById('memoSent').value,
+    loiIssued: document.getElementById('loiIssued').value,
+    poIssued: document.getElementById('poIssued').value
+  };
 
   msg.style.color='#666';
-  msg.textContent='Checking...';
+  msg.textContent='Submitting...';
 
   try{
-    const r = await fetch(API,{
-      method:'POST',
-      body:JSON.stringify({
-        action:'login',
-        ID:id,
-        password:pass
-      })
+    const response = await fetch(API, {
+      method: 'POST',
+      body: JSON.stringify(formData)
     });
 
-    const j = await r.json();
+    const result = await response.json();
 
-    if(j.status === 'success'){
-      localStorage.setItem('ID', j.ID);
-      localStorage.setItem('name', j.name);
-      localStorage.setItem('role', j.role);
-
+    if(result.status === 'success'){
       msg.style.color='green';
-      msg.textContent='Login successful';
+      msg.textContent='PR submitted successfully!';
+      
+      // Reset form after 2 seconds
+      setTimeout(() => {
+        resetForm();
+      }, 2000);
 
-      setTimeout(()=>{
-        location.href='trackingsystem.html';
-      },300);
-
-    }else{
+    } else {
       msg.style.color='red';
-      msg.textContent='Invalid ID or Password';
+      msg.textContent='Error: ' + (result.message || 'Failed to submit PR');
     }
 
-  }catch(e){
+  } catch(error) {
     msg.style.color='red';
     msg.textContent='Connection Error';
+    console.error('Error:', error);
   }
 }
 </script>
