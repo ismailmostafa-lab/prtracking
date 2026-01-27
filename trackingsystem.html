@@ -1,133 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Enterprise Project Management – PR Tracking System</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>Enterprise Project Management – PR Tracking</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg:#f4f1fb;
-  --card:#fff;
-  --primary:#6f4aa8;
-  --primary-dark:#54347d;
-  --burgundy:#7b1e3a;
-  --danger:#b42323;
-}
-
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:'Cairo',sans-serif;
-  background:var(--bg);
-}
-
-/* HEADER */
-.header{
-  max-width:1300px;
-  margin:30px auto;
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  color:#fff;
-  padding:28px;
-  border-radius:22px;
-  text-align:center;
-}
-.header h1{margin:0;font-size:26px}
-.header p{margin:6px 0 0;opacity:.9}
-
-/* SEARCH */
-.search-box{
-  max-width:1300px;
-  margin:20px auto;
-  background:#fff;
-  padding:18px;
-  border-radius:18px;
-  display:flex;
-  gap:12px;
-}
-.search-box input{
-  flex:1;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #ddd;
-  font-size:15px;
-}
-.search-box button{
-  padding:14px 26px;
-  border:none;
-  border-radius:14px;
-  cursor:pointer;
-  color:#fff;
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-}
-
-/* FORM */
-.container{
-  max-width:1300px;
-  margin:20px auto 40px;
-}
-.card{
-  background:#fff;
-  border-radius:24px;
-  padding:30px;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:22px;
-}
-.section{
-  grid-column:1/-1;
-  font-size:18px;
-  font-weight:700;
-  color:var(--burgundy);
-  border-bottom:2px solid #e6cfd6;
-  padding-bottom:6px;
-  margin-top:10px;
-}
-label{font-weight:700;font-size:14px}
-input,select{
-  width:100%;
-  padding:13px;
-  border-radius:14px;
-  border:1px solid #ddd;
-}
-.readonly input,
-.readonly select{
-  background:#f2f2f2;
-  pointer-events:none;
-}
-.required{
-  border:2px solid red !important;
-}
-
-/* ACTIONS */
-.actions{
-  text-align:center;
-  margin-top:30px;
-}
-.actions button{
-  padding:14px 36px;
-  border:none;
-  border-radius:18px;
-  font-size:16px;
-  color:#fff;
-  cursor:pointer;
-  margin:0 6px;
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-}
-.actions .danger{background:var(--danger)}
+body{font-family:Cairo;background:#f5f2fb;margin:0}
+.header{background:linear-gradient(135deg,#9b6ab8,#5c3b8c);color:#fff;padding:30px;text-align:center;border-radius:0 0 30px 30px}
+.container{max-width:1300px;margin:20px auto;background:#fff;padding:30px;border-radius:20px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+label{font-weight:600}
+input,select{padding:12px;border-radius:12px;border:1px solid #ddd;width:100%}
+.actions{text-align:center;margin-top:30px}
+button{padding:12px 30px;border:none;border-radius:16px;background:#6b3fa0;color:#fff;font-size:15px;cursor:pointer}
 .hidden{display:none}
-
-/* FOOTER */
-.footer{
-  text-align:center;
-  color:#999;
-  font-size:12px;
-  margin-bottom:20px;
-}
+.readonly input,.readonly select{background:#eee;pointer-events:none}
 </style>
 </head>
 
@@ -138,217 +27,95 @@ input,select{
   <p>PR Tracking System</p>
 </div>
 
-<div class="search-box">
-  <input id="searchPR" type="number" placeholder="Enter PR Number">
-  <button id="searchBtn">Search</button>
-  <button onclick="newPR()">New</button>
-</div>
-
 <div class="container">
-<div class="card readonly" id="formCard">
-<div class="grid">
 
-<div class="section">PR Information</div>
+  <input id="searchPR" placeholder="Enter PR Number">
+  <button onclick="searchPR()">Search</button>
+  <button onclick="newPR()">New</button>
 
-<div><label>PR</label><input data-field="PR"></div>
-<div><label>PR Creation Date</label><input type="date" data-field="PR Creation Date"></div>
-<div><label>PR Approval Date</label><input type="date" data-field="PR Approval Date"></div>
+  <div id="form" class="readonly">
+    <div class="grid">
 
-<div><label>PR Status</label>
-<select data-field="PR Status">
-<option value="">-- Select --</option>
-<option>Approved</option>
-<option>In Progress</option>
-<option>Cancelled</option>
-</select>
-</div>
+      <div><label>PR</label><input data-field="PR"></div>
+      <div><label>PR Creation Date</label><input type="date" data-field="PR Creation Date"></div>
+      <div><label>PR Approval Date</label><input type="date" data-field="PR Approval Date"></div>
+      <div><label>PR Status</label><select data-field="PR Status"><option>Approved</option><option>In Progress</option><option>Cancelled</option></select></div>
 
-<div><label>PR Amount</label><input type="number" data-field="PR Amount"></div>
+      <div><label>PR Amount</label><input data-field="PR Amount"></div>
+      <div><label>PR Currency</label><select data-field="PR Currency"><option>EGP</option><option>USD</option></select></div>
+      <div><label>Buyer</label><input data-field="Buyer"></div>
+      <div><label>Description</label><input data-field="Description"></div>
 
-<div><label>PR Currency</label>
-<select data-field="PR Currency">
-<option value="">-- Select --</option>
-<option>EGP</option>
-<option>USD</option>
-</select>
-</div>
+      <div><label>Vendor Name</label><input data-field="Vendor Name"></div>
+      <div><label>Purchase Status</label><select data-field="Purchase Status"><option>Rent</option><option>Sale</option></select></div>
+      <div><label>Order Place</label><select data-field="Order Place"><option>TE data store</option><option>Customer store</option></select></div>
+      <div><label>ECRM Order</label><input data-field="ECRM Order"></div>
 
-<div><label>Buyer</label><input data-field="Buyer"></div>
-<div><label>Description</label><input data-field="Description"></div>
-<div><label>Vendor Name</label><input data-field="Vendor Name"></div>
+      <div><label>Order Type</label><select data-field="Order Type"><option>HW</option><option>License</option><option>Cross connection</option></select></div>
+      <div><label>Quantity / Speed</label><input data-field="Quantity / Speed"></div>
+      <div><label>Customer Name</label><input data-field="Customer Name"></div>
+      <div><label>Customer PO Amount</label><input data-field="Customer PO Amount"></div>
 
-<div><label>Purchase Status</label>
-<select data-field="Purchase status">
-<option value="">-- Select --</option>
-<option>Rent</option>
-<option>Sale</option>
-</select>
-</div>
+      <div><label>PO Currency</label><select data-field="PO Currency"><option>EGP</option><option>USD</option></select></div>
+      <div><label>Customer PO</label><input data-field="Customer PO"></div>
+      <div><label>Payment Status Description</label><input data-field="Payment Status Description"></div>
+      <div><label>Customer Type</label><select data-field="Customer Type"><option>BS</option><option>KAM</option><option>TE International</option><option>Global Partner</option></select></div>
 
-<div><label>Order Place</label>
-<select data-field="Order Place">
-<option value="">-- Select --</option>
-<option>TE data store</option>
-<option>Customer store</option>
-</select>
-</div>
+      <div><label>Project Manager</label><input data-field="Project Manager"></div>
+      <div><label>Account Manager</label><input data-field="Account Manager"></div>
+      <div><label>Get Final Price</label><select data-field="Get Final Price"><option>Done</option><option>Pending</option></select></div>
+      <div><label>Final Price</label><input type="date" data-field="Final Price"></div>
 
-<div class="section">Management & Tracking</div>
+      <div><label>Memo’s Sent</label><input type="date" data-field="Memo’s Sent"></div>
+      <div><label>LOI Issued</label><input type="date" data-field="LOI Issued"></div>
+      <div><label>PO Issued</label><input type="date" data-field="PO Issued"></div>
 
-<div><label>Project Manager</label><input data-field="Project Manager"></div>
-<div><label>Account Manager</label><input data-field="Account Manager"></div>
+    </div>
 
-<div><label>Get Final Price</label>
-<select data-field="Get Final Price">
-<option value="">-- Select --</option>
-<option>Done</option>
-<option>Pending</option>
-</select>
-</div>
+    <div class="actions">
+      <button onclick="editMode()">Edit</button>
+      <button onclick="savePR()">Save</button>
+      <button onclick="deletePR()">Delete</button>
+    </div>
+  </div>
 
-<div><label>Final Price</label><input type="date" data-field="Final Price"></div>
-<div><label>Memo’s Sent</label><input type="date" data-field="Memo’s Sent"></div>
-<div><label>LOI Issued</label><input type="date" data-field="LOI Issued"></div>
-<div><label>PO Issued</label><input type="date" data-field="PO Issued"></div>
-
-</div>
-
-<div class="actions">
-  <button id="editBtn">Edit</button>
-  <button id="saveBtn" class="hidden">Save</button>
-  <button id="cancelBtn" class="hidden">Cancel</button>
-  <button id="deleteBtn" class="hidden danger">Delete</button>
-</div>
-
-</div>
-</div>
-
-<div class="footer">
-Enterprise Project Management | Large & Mega Projects Unit
 </div>
 
 <script>
-/* 🔴 PUT YOUR WEB APP URL HERE */
-const API_URL = "https://script.google.com/macros/s/AKfycbwaSpcUwpMrRxxffp5k34rjt627-iAuv-OGuBvBK9Nm0kjvgE6TQKa1NQwNejfEOpDy/exec";
-
-const formCard = document.getElementById("formCard");
-const searchInput = document.getElementById("searchPR");
-const searchBtn = document.getElementById("searchBtn");
-
-const editBtn = document.getElementById("editBtn");
-const saveBtn = document.getElementById("saveBtn");
-const cancelBtn = document.getElementById("cancelBtn");
-const deleteBtn = document.getElementById("deleteBtn");
-
+const API = "https://script.google.com/macros/s/AKfycbyfkTuWS1lJ3C3W-3DNGoF8cDPR6-Q92UOpwAuUoKPFp05DomDGnGoN7UYaEHWbVuth/exec";
 let currentPR = null;
-let originalData = {};
 
-/* SEARCH */
-searchBtn.onclick = async ()=>{
-  const pr = String(searchInput.value).trim();
-  if(!pr){ alert("Enter PR Number"); return; }
+async function searchPR(){
+  const pr = document.getElementById('searchPR').value;
+  const r = await fetch(API,{method:'POST',body:JSON.stringify({action:'searchPR',PR:pr})});
+  const j = await r.json();
+  if(j.status!=='success') return alert("Not found");
 
-  searchBtn.textContent="Loading...";
-  searchBtn.disabled=true;
-
-  try{
-    const r = await fetch(API_URL,{
-      method:"POST",
-      body:JSON.stringify({action:"searchPR",PR:pr})
-    });
-    const j = await r.json();
-    if(j.status!=="success") throw "PR not found";
-
-    currentPR=pr;
-    originalData={...j.data};
-
-    document.querySelectorAll("[data-field]").forEach(el=>{
-      el.value=j.data[el.dataset.field]||"";
-      el.classList.remove("required");
-    });
-
-    resetView();
-  }catch(e){ alert(e); }
-  finally{
-    searchBtn.textContent="Search";
-    searchBtn.disabled=false;
-  }
-};
-
-/* NEW */
-function newPR(){
-  currentPR=null;
-  searchInput.value="";
-  document.querySelectorAll("[data-field]").forEach(el=>el.value="");
-  editMode();
+  currentPR = pr;
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    el.value = j.data[el.dataset.field] || '';
+  });
 }
 
-/* EDIT */
-editBtn.onclick = editMode;
 function editMode(){
-  formCard.classList.remove("readonly");
-  editBtn.classList.add("hidden");
-  saveBtn.classList.remove("hidden");
-  cancelBtn.classList.remove("hidden");
-  deleteBtn.classList.remove("hidden");
+  document.getElementById('form').classList.remove('readonly');
 }
 
-/* SAVE */
-saveBtn.onclick = async ()=>{
-  let invalid=null;
-  document.querySelectorAll("[data-field]").forEach(el=>{
-    el.classList.remove("required");
-    if(!el.value){
-      el.classList.add("required");
-      if(!invalid) invalid=el;
-    }
-  });
-  if(invalid){ alert("Fill all fields"); return; }
+async function savePR(){
+  const data = {};
+  document.querySelectorAll('[data-field]').forEach(el=>data[el.dataset.field]=el.value);
+  await fetch(API,{method:'POST',body:JSON.stringify({action:'savePR',data})});
+  alert("Saved");
+}
 
-  const data={};
-  document.querySelectorAll("[data-field]").forEach(el=>{
-    data[el.dataset.field]=el.value;
-  });
+async function deletePR(){
+  await fetch(API,{method:'POST',body:JSON.stringify({action:'deletePR',PR:currentPR})});
+  location.reload();
+}
 
-  await fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({action:"savePR",user:"SYSTEM",data})
-  });
-
-  searchInput.value=data.PR;
-  searchBtn.click();
-};
-
-/* CANCEL */
-cancelBtn.onclick = ()=>{
-  document.querySelectorAll("[data-field]").forEach(el=>{
-    el.value=originalData[el.dataset.field]||"";
-    el.classList.remove("required");
-  });
-  resetView();
-};
-
-/* DELETE */
-deleteBtn.onclick = async ()=>{
-  if(!currentPR) return;
-  if(!confirm("Delete this PR?")) return;
-
-  await fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({action:"deletePR",PR:currentPR,user:"SYSTEM"})
-  });
-
-  newPR();
-  resetView();
-};
-
-/* RESET */
-function resetView(){
-  formCard.classList.add("readonly");
-  editBtn.classList.remove("hidden");
-  saveBtn.classList.add("hidden");
-  cancelBtn.classList.add("hidden");
-  deleteBtn.classList.add("hidden");
+function newPR(){
+  document.querySelectorAll('[data-field]').forEach(el=>el.value='');
+  editMode();
 }
 </script>
 
