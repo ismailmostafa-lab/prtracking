@@ -67,20 +67,45 @@ async function exportData(){
   const status = document.getElementById('status');
   status.textContent = 'Fetching data...';
 
-  const r = await fetch(API,{
-    method:'POST',
-    headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({ action:'getAllPR' })
-  });
+  try{
+    const r = await fetch(API,{
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ action:'getAllPR' })
+    });
 
-  const j = await r.json();
-  if(j.status !== 'success'){
-    status.textContent = 'Export failed';
-    return;
+    const txt = await r.text();   // 🔥 مهم جدًا
+    console.log('RAW RESPONSE:', txt);
+
+    let j;
+    try{
+      j = JSON.parse(txt);
+    }catch(e){
+      status.textContent = 'Invalid response from server';
+      alert(txt);   // 👈 هيطلعلك الحقيقة
+      return;
+    }
+
+    if(j.status !== 'success'){
+      status.textContent = 'Export failed';
+      return;
+    }
+
+    const data = j.data;
+    status.textContent = `Exporting ${data.length} row(s)...`;
+
+    const ws = XLSX.utils.json_to_sheet(data,{cellDates:true});
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'PR Data');
+    XLSX.writeFile(wb,'PR_Full_Data.xlsx');
+
+    status.textContent = 'Export completed ✔️';
+
+  }catch(err){
+    console.error(err);
+    status.textContent = 'Connection error';
   }
-
-  const data = j.data;
-  status.textContent = `Processing ${data.length} rows...`;
+}
 
   // ===== SAFE SHEET CREATION =====
   const ws = XLSX.utils.aoa_to_sheet([Object.keys(data[0])]);
