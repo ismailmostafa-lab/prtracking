@@ -427,20 +427,26 @@ function resetView(){
 
 /* ===== SAVE ===== */
 async function saveChanges(){
-  const payload = { action:'savePR' };
+  const payload = {
+    action: 'savePR',
+    data: {},
+    user: 'WEB'
+  };
 
   document.querySelectorAll('[data-field]').forEach(el=>{
     let value = el.value;
+
     if(el.classList.contains('money')){
       value = value.replace(/,/g,'');
     }
-    payload[el.dataset.field] = value;
+
+    payload.data[el.dataset.field] = value;
   });
 
   showLoading('Saving...');
   const r = await fetch(API,{
     method:'POST',
-    body:JSON.stringify(payload)
+    body: JSON.stringify(payload)
   });
   const j = await r.json();
   hideLoading();
@@ -450,10 +456,11 @@ async function saveChanges(){
     return;
   }
 
-  originalData = {...payload};
+  originalData = {...payload.data};
   resetView();
   alert('Saved successfully');
 }
+
 
 /* ===== DELETE ===== */
 async function deletePR(){
