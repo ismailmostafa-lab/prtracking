@@ -200,6 +200,17 @@ body.pdf-mode .pdf-footer {
   }
 }
 
+/* زرار التصدير */
+.export-btn {
+  display: inline-block;
+}
+
+/* اخفاء الزرار وقت الطباعة فقط */
+@media print {
+  .export-btn {
+    display: none !important;
+  }
+}
 
   
 </style>
@@ -221,7 +232,7 @@ body.pdf-mode .pdf-footer {
     <input id="searchPR" class="search-input" type="number" placeholder="Enter PR Number">
     <button class="search-btn" onclick="searchPR()">Search</button>
     <button class="search-btn" onclick="newPR()">New</button>
-    <button class="action-btn" onclick="exportToPDF()">Export to PDF</button>
+    <button class="action-btn export-btn" onclick="exportToPDF()">Export to PDF</button>
   </div>
 </div>
 
@@ -534,29 +545,18 @@ async function deletePR(){
 
 function exportToPDF() {
 
-  // 1) دخل PDF Mode
-  document.body.classList.add('pdf-mode');
-
-  // 2) التاريخ والوقت
+  const footer = document.getElementById('pdfFooter');
   const now = new Date();
-  document.getElementById('pdfFooter').innerText =
+
+  footer.innerText =
     'Exported on: ' +
     now.toLocaleDateString() +
     ' ' +
     now.toLocaleTimeString();
 
-  // 3) سيب المتصفح يظبط الـ layout
-  setTimeout(() => {
-
-    window.print();
-
-    // 4) ارجع للوضع الطبيعي
-    setTimeout(() => {
-      document.body.classList.remove('pdf-mode');
-    }, 500);
-
-  }, 300);
+  window.print();
 }
+
   
 </script>
 
