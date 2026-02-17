@@ -223,6 +223,16 @@ body.pdf-mode .pdf-footer {
   padding-top: 12px;
 }
 
+/* ===== Payment Status Description Large Area ===== */
+.payment-desc-box {
+  grid-column: span 2;   /* نفس فكرة Description */
+}
+
+.payment-desc-area {
+  min-height: 130px;
+  resize: vertical;
+  padding-top: 12px;
+}
 
   
 </style>
@@ -337,7 +347,13 @@ body.pdf-mode .pdf-footer {
 </div>
 
 <div><label class="label">Customer PO</label><input class="input" data-field="Customer PO" type="date"></div>
-<div><label class="label">Payment Status Description</label><input class="input" data-field="Payment Status Description"></div>
+
+<div class="payment-desc-box">
+  <label class="label">Payment Status Description</label>
+  <textarea class="input payment-desc-area"
+            data-field="Payment Status Description"></textarea>
+</div>
+
 
 <div><label class="label">Customer Type</label>
 <select class="select" data-field="Customer Type">
