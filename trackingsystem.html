@@ -103,6 +103,13 @@ body.pdf-mode .pdf-footer{display:block;position:relative;margin-top:30px;text-a
 
 /* msgs container */
 .msgs-area{max-width:1300px;margin:0 auto;padding:0 16px;}
+
+/* ===== REQUIRED FIELD HIGHLIGHT ===== */
+.field-error{border:2px solid #c62828!important;background:#fff5f5!important;box-shadow:0 0 0 3px rgba(198,40,40,0.15)!important;}
+.field-error-label{color:#c62828!important;}
+
+/* ===== SAVE MSGS BOTTOM ===== */
+.bottom-msgs{max-width:1300px;margin:0 auto 20px auto;padding:0 16px;}
 </style>
 </head>
 <body>
@@ -215,6 +222,23 @@ body.pdf-mode .pdf-footer{display:block;position:relative;margin-top:30px;text-a
 </div>
 
 <div class="footer">Enterprise Project Management | Large &amp; Mega Projects Unit</div>
+
+<!-- BOTTOM MSGS (Save/Delete) -->
+<div class="bottom-msgs">
+  <div id="msgSaveOkBottom" class="pulse-msg-success" style="display:none;">
+    <div class="pulse-icon-success"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,11 9,16 18,6"/></svg></div>
+    Saved successfully
+  </div>
+  <div id="msgSaveFailBottom" class="pulse-msg" style="display:none;">
+    <div class="pulse-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c62828" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    Save failed
+  </div>
+  <div id="msgRequiredBottom" class="pulse-msg-warn" style="display:none;">
+    <div class="pulse-icon-warn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    Please fill all required fields
+  </div>
+</div>
+
 <div class="pdf-footer" id="pdfFooter"></div>
 
 <script>
@@ -229,14 +253,38 @@ var deleteBtn  = document.getElementById('deleteBtn');
 var cancelBtn  = document.getElementById('cancelBtn');
 var loadingOverlay = document.getElementById('loadingOverlay');
 
-var allMsgIds = ['msgSearchWarn','msgNotFound','msgSaveOk','msgSaveFail','msgDeleteOk','msgDeleteFail'];
+var allMsgIds = ['msgSearchWarn','msgNotFound','msgSaveOk','msgSaveFail','msgDeleteOk','msgDeleteFail','msgSaveOkBottom','msgSaveFailBottom','msgRequiredBottom'];
 
 function hideAllMsgs(){allMsgIds.forEach(function(id){document.getElementById(id).style.display='none';});}
 function showPulse(id){var el=document.getElementById(id);el.style.display='none';void el.offsetWidth;el.style.display='block';}
 function shakeBtn(btn){btn.classList.remove('shake');void btn.offsetWidth;btn.classList.add('shake');}
+function scrollBottom(){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});}
 
 function showLoading(text){loadingOverlay.innerText=text;loadingOverlay.style.display='flex';}
 function hideLoading(){loadingOverlay.style.display='none';}
+
+function clearFieldErrors(){
+  document.querySelectorAll('[data-field]').forEach(function(el){
+    el.classList.remove('field-error');
+    if(el.previousElementSibling) el.previousElementSibling.classList.remove('field-error-label');
+  });
+}
+
+function validateFields(){
+  var hasError = false;
+  document.querySelectorAll('[data-field]').forEach(function(el){
+    var val = el.value.trim();
+    if(!val){
+      el.classList.add('field-error');
+      if(el.previousElementSibling) el.previousElementSibling.classList.add('field-error-label');
+      hasError = true;
+    } else {
+      el.classList.remove('field-error');
+      if(el.previousElementSibling) el.previousElementSibling.classList.remove('field-error-label');
+    }
+  });
+  return !hasError;
+}
 
 function formatDateForInput(value){if(!value)return'';var d=new Date(value);if(isNaN(d))return'';return d.toISOString().split('T')[0];}
 function formatMoney(value){value=value.replace(/,/g,'');if(value===''||isNaN(value))return'';return Number(value).toLocaleString('en-US',{maximumFractionDigits:2});}
@@ -246,7 +294,7 @@ document.querySelectorAll('.money').forEach(function(el){
 });
 
 function scrollTop(){window.scrollTo({top:0,behavior:'smooth'});}
-function clearForm(){document.querySelectorAll('[data-field]').forEach(function(el){el.value='';});prField.classList.remove('pr-locked');}
+function clearForm(){document.querySelectorAll('[data-field]').forEach(function(el){el.value='';});prField.classList.remove('pr-locked');clearFieldErrors();}
 
 /* ===== SEARCH ===== */
 function searchPR(){
@@ -294,7 +342,7 @@ function searchPR(){
     });
 }
 
-function newPR(){clearForm();editMode();}
+function newPR(){hideAllMsgs();clearForm();editMode();}
 
 function editMode(){
   scrollTop();
@@ -313,6 +361,7 @@ function cancelChanges(){
     if(el.classList.contains('money')) val=formatMoney(String(val));
     el.value=val;
   });
+  clearFieldErrors();
   resetView();
 }
 
@@ -346,13 +395,24 @@ function resetView(){
 
 /* ===== SAVE ===== */
 function saveChanges(){
+  hideAllMsgs();
+  clearFieldErrors();
+
+  // Validate
+  if(!validateFields()){
+    shakeBtn(saveBtn);
+    scrollBottom();
+    showPulse('msgRequiredBottom');
+    return;
+  }
+
   var sp=document.getElementById('spSave');
   var ck=document.getElementById('ckSave');
   var cp=document.getElementById('cpSave');
   var tx=document.getElementById('txSave');
 
   saveBtn.disabled=true; sp.style.display='block';
-  tx.textContent='Saving...'; hideAllMsgs();
+  tx.textContent='Saving...';
 
   var payload={action:'savePR',data:{},user:'WEB'};
   document.querySelectorAll('[data-field]').forEach(function(el){
@@ -361,13 +421,17 @@ function saveChanges(){
     payload.data[el.dataset.field]=value;
   });
 
+  var savedPR = payload.data['PR'];
+
   fetch(API,{method:'POST',body:JSON.stringify(payload)})
     .then(function(r){return r.json();})
     .then(function(j){
       sp.style.display='none';
       if(j.status!=='success'){
         saveBtn.disabled=false; tx.textContent='Save';
-        shakeBtn(saveBtn); showPulse('msgSaveFail');
+        shakeBtn(saveBtn);
+        scrollBottom();
+        showPulse('msgSaveFailBottom');
         return;
       }
       saveBtn.classList.add('success-state');
@@ -375,12 +439,22 @@ function saveChanges(){
       setTimeout(function(){cp.classList.add('drawn');},60);
       tx.textContent='Saved!';
       originalData={...payload.data};
-      showPulse('msgSaveOk');
-      setTimeout(function(){resetView();},1500);
+      scrollBottom();
+      showPulse('msgSaveOkBottom');
+      setTimeout(function(){
+        resetView();
+        // افتح الـ PR اللي اتحفظ في الـ search
+        if(savedPR){
+          document.getElementById('searchPR').value = savedPR;
+          searchPR();
+        }
+      },1500);
     })
     .catch(function(){
       sp.style.display='none'; saveBtn.disabled=false; tx.textContent='Save';
-      shakeBtn(saveBtn); showPulse('msgSaveFail');
+      shakeBtn(saveBtn);
+      scrollBottom();
+      showPulse('msgSaveFailBottom');
     });
 }
 
