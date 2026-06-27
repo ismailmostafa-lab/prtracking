@@ -216,7 +216,7 @@ body{background:var(--bg);font-family:'Cairo',sans-serif;}
       <span id="txSearch">Search</span>
     </button>
     <button class="action-btn" id="newBtn" onclick="newPR()">New</button>
-    <button class="action-btn export-btn" onclick="exportToPDF()">Export to PDF</button>
+    <button class="action-btn export-btn" id="exportBtn" onclick="exportToPDF()" disabled style="opacity:0.5;cursor:not-allowed;">Export to PDF</button>
   </div>
 </div>
 
@@ -391,9 +391,9 @@ function clearForm(){
   document.querySelectorAll('[data-field]').forEach(function(el){el.value='';});
   prField.classList.remove('pr-locked');
   clearFieldErrors();
-  editBtn.disabled=true;
-  editBtn.style.opacity='0.5';
-  editBtn.style.cursor='not-allowed';
+  editBtn.disabled=true; editBtn.style.opacity='0.5'; editBtn.style.cursor='not-allowed';
+  var exportBtn=document.getElementById('exportBtn');
+  exportBtn.disabled=true; exportBtn.style.opacity='0.5'; exportBtn.style.cursor='not-allowed';
 }
 
 /* ===== SEARCH ===== */
@@ -430,10 +430,14 @@ function searchPR(){
         if(el.classList.contains('money')) val=formatMoney(String(val));
         el.value=val;
       });
-      // تفعيل Edit بعد ما في داتا
+      // تفعيل Edit و Export بعد ما في داتا
       editBtn.disabled=false;
       editBtn.style.opacity='1';
       editBtn.style.cursor='pointer';
+      var exportBtn=document.getElementById('exportBtn');
+      exportBtn.disabled=false;
+      exportBtn.style.opacity='1';
+      exportBtn.style.cursor='pointer';
       setTimeout(function(){
         btn.classList.remove('success-state');
         ck.style.display='none'; cp.classList.remove('drawn');
