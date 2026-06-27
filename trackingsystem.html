@@ -90,16 +90,96 @@ body{background:var(--bg);font-family:'Cairo',sans-serif;}
 .actions{text-align:center;margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
 .loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999;font-size:22px;color:#fff;font-weight:700;}
 .footer{text-align:center;font-size:12px;color:#999;margin:20px 0;}
-body.pdf-mode .search-wrap,body.pdf-mode .actions,body.pdf-mode .header-box{display:none!important;}
-body.pdf-mode{background:#fff!important;}
-body.pdf-mode *{page-break-after:auto;page-break-before:auto;page-break-inside:avoid;}
-.pdf-footer{display:none;}
-body.pdf-mode .pdf-footer{display:block;position:relative;margin-top:30px;text-align:center;font-size:11px;color:#555;}
-@media print{html,body{height:auto;}.export-btn{display:none!important;}}
-.description-box{grid-column:span 2;}
-.description-area{min-height:130px;resize:vertical;padding-top:12px;}
-.payment-desc-box{grid-column:span 2;}
-.payment-desc-area{min-height:130px;resize:vertical;padding-top:12px;}
+/* ===== PDF / PRINT MODE ===== */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  body { background: #fff !important; font-size: 12px !important; }
+
+  /* إخفاء عناصر مش محتاجينها */
+  .search-wrap,
+  .actions,
+  .loading-overlay,
+  .bottom-msgs,
+  .msgs-area,
+  .footer,
+  .header-box { display: none !important; }
+
+  /* الـ container */
+  .container { margin: 0 !important; padding: 0 !important; }
+  .card { border-radius: 0 !important; padding: 10px !important; box-shadow: none !important; }
+
+  /* PDF Header */
+  .pdf-header-print {
+    display: block !important;
+    text-align: center;
+    margin-bottom: 14px;
+    border-bottom: 2px solid #573B92;
+    padding-bottom: 10px;
+  }
+  .pdf-header-print h1 { font-size: 16px; font-weight: 700; color: #573B92; margin: 0; }
+  .pdf-header-print p  { font-size: 11px; color: #888; margin: 2px 0 0 0; }
+
+  /* Grid في الطباعة */
+  .grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px 16px !important;
+  }
+
+  .description-box,
+  .payment-desc-box { grid-column: span 2 !important; }
+
+  .section-title {
+    grid-column: 1 / -1 !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #7b1e3a !important;
+    background: #f9f0f3 !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    margin-top: 10px !important;
+    border-bottom: none !important;
+  }
+
+  /* Label */
+  .label { font-size: 10px !important; color: #888 !important; margin-bottom: 2px !important; }
+
+  /* إخفاء الـ input/select/textarea الأصلية */
+  .input, .select { display: none !important; }
+
+  /* إظهار الـ print-value */
+  .print-value {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #111 !important;
+    padding: 2px 0 !important;
+    min-height: 16px !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+
+  .pdf-footer {
+    display: block !important;
+    position: fixed !important;
+    bottom: 10px !important;
+    left: 0 !important;
+    right: 0 !important;
+    text-align: center !important;
+    font-size: 10px !important;
+    color: #888 !important;
+  }
+}
+
+/* إخفاء pdf-header-print في الشاشة العادية */
+.pdf-header-print { display: none; }
+.print-value { display: none; }
+
+/* description areas */
+.description-box { grid-column: span 2; }
+.description-area { min-height: 130px; resize: vertical; padding-top: 12px; }
+.payment-desc-box { grid-column: span 2; }
+.payment-desc-area { min-height: 130px; resize: vertical; padding-top: 12px; }
 
 /* msgs container */
 .msgs-area{max-width:1300px;margin:0 auto;padding:0 16px;}
@@ -164,6 +244,13 @@ body.pdf-mode .pdf-footer{display:block;position:relative;margin-top:30px;text-a
 
 <div class="container">
 <div class="card readonly" id="formCard">
+
+<!-- PDF HEADER - بيظهر بس في الطباعة -->
+<div class="pdf-header-print">
+  <h1>Enterprise Project Management</h1>
+  <p>PR Tracking System</p>
+</div>
+
 <div class="grid">
 
 <div class="section-title">PR Information</div>
@@ -509,9 +596,20 @@ function deletePR(){
 }
 
 function exportToPDF(){
-  var footer=document.getElementById('pdfFooter');
-  var now=new Date();
-  footer.innerText='Exported on: '+now.toLocaleDateString()+' '+now.toLocaleTimeString();
+  // إضافة print-value لكل field
+  document.querySelectorAll('[data-field]').forEach(function(el){
+    var existing = el.parentNode.querySelector('.print-value');
+    if(existing) existing.remove();
+    var pv = document.createElement('span');
+    pv.className = 'print-value';
+    pv.textContent = el.value || '—';
+    el.parentNode.appendChild(pv);
+  });
+
+  var footer = document.getElementById('pdfFooter');
+  var now = new Date();
+  footer.innerText = 'Exported on: ' + now.toLocaleDateString() + ' ' + now.toLocaleTimeString() + '   |   Enterprise Project Management | Large & Mega Projects Unit';
+
   window.print();
 }
 </script>
