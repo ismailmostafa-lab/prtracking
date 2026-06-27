@@ -3,488 +3,303 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Enterprise Project Management — PR Tracking System</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --bg:#f4f1fb;
-  --card:#fff;
-  --muted:#6b6b6b;
-  --accent:#00a3e0;
-  --btn-start:#A666B0;
-  --btn-end:#573B92;
-  --burgundy:#7b1e3a;
-  --danger:#9b1c1c;
-}
+:root{--bg:#f4f1fb;--card:#fff;--muted:#6b6b6b;--accent:#00a3e0;--btn-start:#A666B0;--btn-end:#573B92;--burgundy:#7b1e3a;--danger:#9b1c1c;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);font-family:'Cairo',sans-serif;}
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  background:var(--bg);
-  font-family:'Cairo',sans-serif;
-}
+.header-box{max-width:1300px;margin:26px auto 0;background:linear-gradient(135deg,var(--btn-start),var(--btn-end));padding:26px;border-radius:22px;text-align:center;color:#fff;}
+.header-title{font-size:24px;font-weight:700;}
+.header-sub{font-size:15px;opacity:.9;}
 
-/* HEADER */
-.header-box{
-  max-width:1300px;
-  margin:26px auto 0;
-  background:linear-gradient(135deg,var(--btn-start),var(--btn-end));
-  padding:26px;
-  border-radius:22px;
-  text-align:center;
-  color:#fff;
-}
-.header-title{font-size:24px;font-weight:700}
-.header-sub{font-size:15px;opacity:.9}
+.search-wrap{max-width:1300px;margin:18px auto;padding:0 16px;}
+.search-box{background:#fff;border-radius:18px;padding:18px;display:flex;gap:14px;align-items:center;}
+.search-input{flex:1;padding:14px;border-radius:14px;border:1px solid #ddd;font-size:15px;font-family:'Cairo',sans-serif;}
 
-/* SEARCH */
-.search-wrap{max-width:1300px;margin:18px auto;padding:0 16px}
-.search-box{
-  background:#fff;
-  border-radius:18px;
-  padding:18px;
-  display:flex;
-  gap:14px;
-}
-.search-input{
-  flex:1;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #ddd;
-  font-size:15px;
-}
-.search-btn{
-  padding:14px 30px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,var(--btn-start),var(--btn-end));
-  color:#fff;
-  cursor:pointer;
-}
-
-/* FORM */
-.container{max-width:1300px;margin:20px auto 40px;padding:0 16px}
-.card{
-  background:#fff;
-  border-radius:24px;
-  padding:30px;
-}
-
-/* SECTION HEADER */
-.section-title{
-  grid-column:1/-1;
-  font-size:18px;
-  font-weight:700;
-  color:var(--burgundy);
-  padding-bottom:8px;
-  margin-top:14px;
-  border-bottom:2px solid #e6cfd6;
-}
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:22px;
-}
-
-/* LABEL */
-.label{
-  font-size:14px;
-  font-weight:700;
-  color:#000;
-  margin-bottom:6px;
-}
-
-.input,.select{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid #ddd;
-  font-size:14px;
-}
-
-/* READ ONLY */
-.readonly .input,
-.readonly .select{
-  background:#f1f1f1;
-  color:#777;
-  pointer-events:none;
-}
-
-/* PR DIMMED (ONLY ADDITION) */
-.pr-locked{
-  background:#f1f1f1 !important;
-  color:#777 !important;
-  pointer-events:none;
-}
-
-/* ACTIONS */
-.actions{text-align:center;margin-top:30px}
+/* ===== ACTION BUTTONS ===== */
 .action-btn{
-  padding:14px 36px;
+  padding:0 24px;
+  height:50px;
   border:none;
-  border-radius:18px;
-  font-size:16px;
+  border-radius:14px;
+  font-size:15px;
+  font-family:'Cairo',sans-serif;
+  font-weight:700;
   background:linear-gradient(135deg,var(--btn-start),var(--btn-end));
   color:#fff;
   cursor:pointer;
-  margin:0 6px;
-}
-.danger{
-  background:var(--danger);
-}
-.hidden{display:none}
-
-/* LOADING OVERLAY */
-.loading-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.45);
-  display:flex;
+  display:-webkit-inline-box;
+  display:-webkit-inline-flex;
+  display:inline-flex;
+  -webkit-box-align:center;
+  -webkit-align-items:center;
   align-items:center;
+  -webkit-box-pack:center;
+  -webkit-justify-content:center;
   justify-content:center;
-  z-index:9999;
-  font-size:22px;
-  color:#fff;
-  font-weight:700;
-  display:none;
+  gap:7px;
+  position:relative;
+  overflow:hidden;
+  -webkit-transition:0.18s ease;
+  transition:0.18s ease;
 }
+.action-btn:active{-webkit-transform:scale(0.96);transform:scale(0.96);}
+.action-btn:disabled{opacity:0.75;cursor:not-allowed;}
+.action-btn.danger{background:var(--danger);}
+.action-btn.success-state{background:linear-gradient(135deg,#2e7d32,#1b5e20)!important;}
+.hidden{display:none!important;}
 
-.footer{
-  text-align:center;
-  font-size:12px;
-  color:#999;
-  margin:20px 0;
-}
+/* ===== SPINNER + CHECKMARK ===== */
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;-webkit-animation:spin 0.7s linear infinite;animation:spin 0.7s linear infinite;display:none;-webkit-flex-shrink:0;flex-shrink:0;}
+@-webkit-keyframes spin{to{-webkit-transform:rotate(360deg);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.check-wrap{display:none;width:18px;height:18px;-webkit-flex-shrink:0;flex-shrink:0;}
+.check-wrap svg{width:18px;height:18px;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.check-path{stroke-dasharray:24;stroke-dashoffset:24;-webkit-transition:stroke-dashoffset 0.35s ease 0.1s;transition:stroke-dashoffset 0.35s ease 0.1s;}
+.check-path.drawn{stroke-dashoffset:0;}
 
-/* ===== PDF MODE ===== */
-body.pdf-mode .search-wrap,
-body.pdf-mode .actions,
-body.pdf-mode .header-box {
-  display: none !important;
-}
+/* ===== SHAKE ===== */
+@-webkit-keyframes shake{0%,100%{-webkit-transform:translateX(0);}20%{-webkit-transform:translateX(-8px);}40%{-webkit-transform:translateX(8px);}60%{-webkit-transform:translateX(-5px);}80%{-webkit-transform:translateX(5px);}}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.shake{-webkit-animation:shake 0.4s ease!important;animation:shake 0.4s ease!important;}
 
-body.pdf-mode {
-  background: #fff !important;
-}
+/* ===== PULSE MSGS ===== */
+.pulse-msg-warn,.pulse-msg,.pulse-msg-success{display:none;text-align:center;margin-top:10px;font-size:14px;font-weight:700;-webkit-animation:pulseText 0.5s ease;animation:pulseText 0.5s ease;}
+.pulse-msg-warn{color:#e65100;}
+.pulse-msg{color:#c62828;}
+.pulse-msg-success{color:#2e7d32;}
+@-webkit-keyframes pulseText{0%{opacity:0;-webkit-transform:scale(0.7);}60%{-webkit-transform:scale(1.1);}100%{opacity:1;-webkit-transform:scale(1);}}
+@keyframes pulseText{0%{opacity:0;transform:scale(0.7);}60%{transform:scale(1.1);}100%{opacity:1;transform:scale(1);}}
+.pulse-icon-warn,.pulse-icon-wrap,.pulse-icon-success{width:44px;height:44px;border-radius:50%;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;margin:0 auto 6px auto;-webkit-animation:pulsering 0.6s ease 0.1s;animation:pulsering 0.6s ease 0.1s;}
+.pulse-icon-warn{background:#fff3e0;}
+.pulse-icon-wrap{background:#ffebee;}
+.pulse-icon-success{background:#e8f5e9;}
+@-webkit-keyframes pulsering{0%{-webkit-transform:scale(0.5);}70%{-webkit-transform:scale(1.15);}100%{-webkit-transform:scale(1);}}
+@keyframes pulsering{0%{transform:scale(0.5);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
 
-/* امنع أي Page Break غصب */
-body.pdf-mode * {
-  page-break-after: auto;
-  page-break-before: auto;
-  page-break-inside: avoid;
-}
+.container{max-width:1300px;margin:20px auto 40px;padding:0 16px;}
+.card{background:#fff;border-radius:24px;padding:30px;}
+.section-title{grid-column:1/-1;font-size:18px;font-weight:700;color:var(--burgundy);padding-bottom:8px;margin-top:14px;border-bottom:2px solid #e6cfd6;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;}
+.label{font-size:14px;font-weight:700;color:#000;margin-bottom:6px;}
+.input,.select{width:100%;padding:14px;border-radius:14px;border:1px solid #ddd;font-size:14px;font-family:'Cairo',sans-serif;}
+.readonly .input,.readonly .select{background:#f1f1f1;color:#777;pointer-events:none;}
+.pr-locked{background:#f1f1f1!important;color:#777!important;pointer-events:none;}
+.actions{text-align:center;margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.loading-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999;font-size:22px;color:#fff;font-weight:700;}
+.footer{text-align:center;font-size:12px;color:#999;margin:20px 0;}
+body.pdf-mode .search-wrap,body.pdf-mode .actions,body.pdf-mode .header-box{display:none!important;}
+body.pdf-mode{background:#fff!important;}
+body.pdf-mode *{page-break-after:auto;page-break-before:auto;page-break-inside:avoid;}
+.pdf-footer{display:none;}
+body.pdf-mode .pdf-footer{display:block;position:relative;margin-top:30px;text-align:center;font-size:11px;color:#555;}
+@media print{html,body{height:auto;}.export-btn{display:none!important;}}
+.description-box{grid-column:span 2;}
+.description-area{min-height:130px;resize:vertical;padding-top:12px;}
+.payment-desc-box{grid-column:span 2;}
+.payment-desc-area{min-height:130px;resize:vertical;padding-top:12px;}
 
-/* الفوتر */
-.pdf-footer {
-  display: none;
-}
-
-body.pdf-mode .pdf-footer {
-  display: block;
-  position: relative;     /* مهم جدا */
-  margin-top: 30px;
-  text-align: center;
-  font-size: 11px;
-  color: #555;
-}
-
-/* امنع صفحة زيادة */
-@media print {
-  html, body {
-    height: auto;
-  }
-}
-
-/* زرار التصدير */
-.export-btn {
-  display: inline-block;
-}
-
-/* اخفاء الزرار وقت الطباعة فقط */
-@media print {
-  .export-btn {
-    display: none !important;
-  }
-}
-
-/* ===== Description Large Area ===== */
-.description-box {
-  grid-column: span 2;   /* ياخد عرض اتنين columns */
-}
-
-.description-area {
-  min-height: 130px;     /* ارتفاع أكبر */
-  resize: vertical;      /* المستخدم يقدر يكبرها لو عايز */
-  padding-top: 12px;
-}
-
-/* ===== Payment Status Description Large Area ===== */
-.payment-desc-box {
-  grid-column: span 2;   /* نفس فكرة Description */
-}
-
-.payment-desc-area {
-  min-height: 130px;
-  resize: vertical;
-  padding-top: 12px;
-}
-
-  
+/* msgs container */
+.msgs-area{max-width:1300px;margin:0 auto;padding:0 16px;}
 </style>
 </head>
-
 <body>
 
-<div class="loading-overlay" id="loadingText">Loading...</div>
+<div class="loading-overlay" id="loadingOverlay">Loading...</div>
 
-<!-- HEADER -->
 <div class="header-box">
   <div class="header-title">Enterprise Project Management</div>
   <div class="header-sub">PR Tracking System</div>
 </div>
 
-<!-- SEARCH + NEW -->
 <div class="search-wrap">
   <div class="search-box">
     <input id="searchPR" class="search-input" type="number" placeholder="Enter PR Number">
-    <button class="search-btn" onclick="searchPR()">Search</button>
-    <button class="search-btn" onclick="newPR()">New</button>
+    <button class="action-btn" id="searchBtn" onclick="searchPR()">
+      <div class="spinner" id="spSearch"></div>
+      <div class="check-wrap" id="ckSearch"><svg viewBox="0 0 22 22"><polyline class="check-path" id="cpSearch" points="4,11 9,16 18,6"/></svg></div>
+      <span id="txSearch">Search</span>
+    </button>
+    <button class="action-btn" id="newBtn" onclick="newPR()">New</button>
     <button class="action-btn export-btn" onclick="exportToPDF()">Export to PDF</button>
   </div>
 </div>
 
-<!-- FORM -->
+<!-- MSGS AREA -->
+<div class="msgs-area">
+  <div id="msgSearchWarn" class="pulse-msg-warn">
+    <div class="pulse-icon-warn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    Enter PR Number
+  </div>
+  <div id="msgNotFound" class="pulse-msg">
+    <div class="pulse-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c62828" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+    PR not found
+  </div>
+  <div id="msgSaveOk" class="pulse-msg-success">
+    <div class="pulse-icon-success"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,11 9,16 18,6"/></svg></div>
+    Saved successfully
+  </div>
+  <div id="msgSaveFail" class="pulse-msg">
+    <div class="pulse-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c62828" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+    Save failed
+  </div>
+  <div id="msgDeleteOk" class="pulse-msg-success">
+    <div class="pulse-icon-success"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,11 9,16 18,6"/></svg></div>
+    PR deleted successfully
+  </div>
+  <div id="msgDeleteFail" class="pulse-msg">
+    <div class="pulse-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c62828" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></div>
+    Delete failed
+  </div>
+</div>
+
 <div class="container">
 <div class="card readonly" id="formCard">
 <div class="grid">
 
 <div class="section-title">PR Information</div>
-
-<div>
-  <label class="label">PR</label>
-  <input class="input" data-field="PR" type="number" id="prField">
-</div>
-
+<div><label class="label">PR</label><input class="input" data-field="PR" type="number" id="prField"></div>
 <div><label class="label">PR Creation Date</label><input class="input" data-field="PR Creation Date" type="date"></div>
 <div><label class="label">PR Approval Date</label><input class="input" data-field="PR Approval Date" type="date"></div>
-
-<div><label class="label">PR Status</label>
-<select class="select" data-field="PR Status">
-  <option>Approved</option>
-  <option>In Process</option>
-  <option>Cancelled</option>
-</select>
-</div>
-
-<div>
-  <label class="label">PR Amount</label>
-  <input class="input money" data-field="PR Amount" type="text">
-</div>
-
-<div><label class="label">PR Currency</label>
-<select class="select" data-field="PR Currency">
-  <option>EGP</option>
-  <option>USD</option>
-</select>
-</div>
-
+<div><label class="label">PR Status</label><select class="select" data-field="PR Status"><option>Approved</option><option>In Process</option><option>Cancelled</option></select></div>
+<div><label class="label">PR Amount</label><input class="input money" data-field="PR Amount" type="text"></div>
+<div><label class="label">PR Currency</label><select class="select" data-field="PR Currency"><option>EGP</option><option>USD</option></select></div>
 <div><label class="label">Buyer</label><input class="input" data-field="Buyer"></div>
-<div class="description-box">
-  <label class="label">Description</label>
-  <textarea class="input description-area"
-            data-field="Description"></textarea>
-</div>
-
+<div class="description-box"><label class="label">Description</label><textarea class="input description-area" data-field="Description"></textarea></div>
 <div><label class="label">Vendor Name</label><input class="input" data-field="Vendor Name"></div>
-
-<div><label class="label">Purchase Status</label>
-<select class="select" data-field="Purchase Status">
-  <option>Rent</option>
-  <option>Sale</option>
-</select>
-</div>
-
-<div><label class="label">Order Place</label>
-<select class="select" data-field="Order Place">
-  <option>TE data store</option>
-  <option>Customer store</option>
-</select>
-</div>
+<div><label class="label">Purchase Status</label><select class="select" data-field="Purchase Status"><option>Rent</option><option>Sale</option></select></div>
+<div><label class="label">Order Place</label><select class="select" data-field="Order Place"><option>TE data store</option><option>Customer store</option></select></div>
 
 <div class="section-title">ECRM Information</div>
-
 <div><label class="label">ECRM Order</label><input class="input" data-field="ECRM Order" type="text"></div>
-
-<div><label class="label">Order Type</label>
-<select class="select" data-field="Order Type">
-  <option>HW</option>
-  <option>License</option>
-  <option>Cross connection</option>
-</select>
-</div>
-
+<div><label class="label">Order Type</label><select class="select" data-field="Order Type"><option>HW</option><option>License</option><option>Cross connection</option></select></div>
 <div><label class="label">Quantity / Speed</label><input class="input" data-field="Quantity / Speed"></div>
 
 <div class="section-title">Customer Information</div>
-
 <div><label class="label">Customer Name</label><input class="input" data-field="Customer Name"></div>
-
-<div>
-  <label class="label">Customer PO Amount</label>
-  <input class="input money" data-field="Customer PO Amount" type="text">
-</div>
-
-<div><label class="label">PO Currency</label>
-<select class="select" data-field="PO Currency">
-  <option>EGP</option>
-  <option>USD</option>
-</select>
-</div>
-
+<div><label class="label">Customer PO Amount</label><input class="input money" data-field="Customer PO Amount" type="text"></div>
+<div><label class="label">PO Currency</label><select class="select" data-field="PO Currency"><option>EGP</option><option>USD</option></select></div>
 <div><label class="label">Customer PO</label><input class="input" data-field="Customer PO" type="date"></div>
+<div class="payment-desc-box"><label class="label">Payment Status Description</label><textarea class="input payment-desc-area" data-field="Payment Status Description"></textarea></div>
+<div><label class="label">Customer Type</label><select class="select" data-field="Customer Type"><option>BS</option><option>KAM</option><option>TE International</option><option>Global Partner</option></select></div>
 
-<div class="payment-desc-box">
-  <label class="label">Payment Status Description</label>
-  <textarea class="input payment-desc-area"
-            data-field="Payment Status Description"></textarea>
-</div>
-
-
-<div><label class="label">Customer Type</label>
-<select class="select" data-field="Customer Type">
-  <option>BS</option>
-  <option>KAM</option>
-  <option>TE International</option>
-  <option>Global Partner</option>
-</select>
-</div>
-
-<div class="section-title">Management & Tracking</div>
-
+<div class="section-title">Management &amp; Tracking</div>
 <div><label class="label">Project Manager</label><input class="input" data-field="Project Manager"></div>
 <div><label class="label">Account Manager</label><input class="input" data-field="Account Manager"></div>
 
 <div class="section-title">PR Status</div>
-
-<div><label class="label">Get Final Price</label>
-<select class="select" data-field="Get Final Price">
-  <option>Pending</option>
-  <option>Done</option>
-</select>
-</div>
-
+<div><label class="label">Get Final Price</label><select class="select" data-field="Get Final Price"><option>Pending</option><option>Done</option></select></div>
 <div><label class="label">Final Price</label><input class="input" data-field="Final Price" type="date"></div>
-<div><label class="label">Memo’s Sent</label><input class="input" data-field="Memo’s Sent" type="date"></div>
+<div><label class="label">Memo's Sent</label><input class="input" data-field="Memo's Sent" type="date"></div>
 <div><label class="label">LOI Issued</label><input class="input" data-field="LOI Issued" type="date"></div>
 <div><label class="label">PO Issued</label><input class="input" data-field="PO Issued" type="date"></div>
-
 </div>
 
 <div class="actions">
   <button class="action-btn" id="editBtn" onclick="editMode()">Edit</button>
-  <button class="action-btn hidden" id="saveBtn" onclick="saveChanges()">Save</button>
-  <button class="action-btn hidden danger" id="deleteBtn" onclick="deletePR()">Delete</button>
+  <button class="action-btn hidden" id="saveBtn" onclick="saveChanges()">
+    <div class="spinner" id="spSave"></div>
+    <div class="check-wrap" id="ckSave"><svg viewBox="0 0 22 22"><polyline class="check-path" id="cpSave" points="4,11 9,16 18,6"/></svg></div>
+    <span id="txSave">Save</span>
+  </button>
+  <button class="action-btn danger hidden" id="deleteBtn" onclick="deletePR()">
+    <div class="spinner" id="spDelete"></div>
+    <div class="check-wrap" id="ckDelete"><svg viewBox="0 0 22 22"><polyline class="check-path" id="cpDelete" points="4,11 9,16 18,6"/></svg></div>
+    <span id="txDelete">Delete</span>
+  </button>
   <button class="action-btn hidden" id="cancelBtn" onclick="cancelChanges()">Cancel</button>
 </div>
-
 </div>
 </div>
 
-<div class="footer">
-Enterprise Project Management | Large & Mega Projects Unit
-</div>
+<div class="footer">Enterprise Project Management | Large &amp; Mega Projects Unit</div>
+<div class="pdf-footer" id="pdfFooter"></div>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbwdEELdIbHmxPGlRFtCqKZ-gcqxqoi4g1WLx0MnLwK3N2wlufS8_2C9NmUDiVnxTCk9/exec";
-let originalData = {};
+var API = "https://script.google.com/macros/s/AKfycbwdEELdIbHmxPGlRFtCqKZ-gcqxqoi4g1WLx0MnLwK3N2wlufS8_2C9NmUDiVnxTCk9/exec";
+var originalData = {};
 
-/* ===== FIX: EXPLICIT ELEMENT BINDING ===== */
-const formCard   = document.getElementById('formCard');
-const prField    = document.getElementById('prField');
-const editBtn    = document.getElementById('editBtn');
-const saveBtn    = document.getElementById('saveBtn');
-const deleteBtn  = document.getElementById('deleteBtn');
-const cancelBtn  = document.getElementById('cancelBtn');
-const loadingText= document.getElementById('loadingText');
-/* ======================================== */
+var formCard   = document.getElementById('formCard');
+var prField    = document.getElementById('prField');
+var editBtn    = document.getElementById('editBtn');
+var saveBtn    = document.getElementById('saveBtn');
+var deleteBtn  = document.getElementById('deleteBtn');
+var cancelBtn  = document.getElementById('cancelBtn');
+var loadingOverlay = document.getElementById('loadingOverlay');
 
-function formatDateForInput(value){
-  if(!value) return '';
-  const d = new Date(value);
-  if(isNaN(d)) return '';
-  return d.toISOString().split('T')[0];
-}
+var allMsgIds = ['msgSearchWarn','msgNotFound','msgSaveOk','msgSaveFail','msgDeleteOk','msgDeleteFail'];
 
-function formatMoney(value){
-  value = value.replace(/,/g,'');
-  if(value === '' || isNaN(value)) return '';
-  return Number(value).toLocaleString('en-US',{maximumFractionDigits:2});
-}
+function hideAllMsgs(){allMsgIds.forEach(function(id){document.getElementById(id).style.display='none';});}
+function showPulse(id){var el=document.getElementById(id);el.style.display='none';void el.offsetWidth;el.style.display='block';}
+function shakeBtn(btn){btn.classList.remove('shake');void btn.offsetWidth;btn.classList.add('shake');}
 
-document.querySelectorAll('.money').forEach(el=>{
-  el.addEventListener('input',()=>{
-    el.value = formatMoney(el.value);
-  });
+function showLoading(text){loadingOverlay.innerText=text;loadingOverlay.style.display='flex';}
+function hideLoading(){loadingOverlay.style.display='none';}
+
+function formatDateForInput(value){if(!value)return'';var d=new Date(value);if(isNaN(d))return'';return d.toISOString().split('T')[0];}
+function formatMoney(value){value=value.replace(/,/g,'');if(value===''||isNaN(value))return'';return Number(value).toLocaleString('en-US',{maximumFractionDigits:2});}
+
+document.querySelectorAll('.money').forEach(function(el){
+  el.addEventListener('input',function(){el.value=formatMoney(el.value);});
 });
 
-function showLoading(text){
-  loadingText.innerText = text;
-  loadingText.style.display = 'flex';
+function scrollTop(){window.scrollTo({top:0,behavior:'smooth'});}
+function clearForm(){document.querySelectorAll('[data-field]').forEach(function(el){el.value='';});prField.classList.remove('pr-locked');}
+
+/* ===== SEARCH ===== */
+function searchPR(){
+  var pr = document.getElementById('searchPR').value;
+  hideAllMsgs();
+  if(!pr){ shakeBtn(document.getElementById('searchBtn')); showPulse('msgSearchWarn'); return; }
+
+  var btn=document.getElementById('searchBtn');
+  var sp=document.getElementById('spSearch');
+  var ck=document.getElementById('ckSearch');
+  var cp=document.getElementById('cpSearch');
+  var tx=document.getElementById('txSearch');
+
+  btn.disabled=true; sp.style.display='block'; tx.textContent='Searching...';
+
+  fetch(API,{method:'POST',body:JSON.stringify({action:'searchPR',PR:pr})})
+    .then(function(r){return r.json();})
+    .then(function(j){
+      sp.style.display='none';
+      if(j.status!=='success'){
+        btn.disabled=false; tx.textContent='Search';
+        shakeBtn(btn); showPulse('msgNotFound');
+        return;
+      }
+      btn.classList.add('success-state');
+      ck.style.display='block';
+      setTimeout(function(){cp.classList.add('drawn');},60);
+      tx.textContent='Found!';
+      originalData={...j.data};
+      document.querySelectorAll('[data-field]').forEach(function(el){
+        var val=j.data[el.dataset.field]||'';
+        if(el.type==='date') val=formatDateForInput(val);
+        if(el.classList.contains('money')) val=formatMoney(String(val));
+        el.value=val;
+      });
+      setTimeout(function(){
+        btn.classList.remove('success-state');
+        ck.style.display='none'; cp.classList.remove('drawn');
+        tx.textContent='Search'; btn.disabled=false;
+      },1500);
+    })
+    .catch(function(){
+      sp.style.display='none'; btn.disabled=false; tx.textContent='Search';
+      shakeBtn(btn); showPulse('msgNotFound');
+    });
 }
-function hideLoading(){
-  loadingText.style.display = 'none';
-}
 
-function scrollTop(){
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function clearForm(){
-  document.querySelectorAll('[data-field]').forEach(el=>el.value='');
-  prField.classList.remove('pr-locked');
-}
-
-async function searchPR(){
-  const pr = document.getElementById('searchPR').value;
-  if(!pr) return alert('Enter PR Number');
-
-  showLoading('Loading...');
-  const r = await fetch(API,{
-    method:'POST',
-    body:JSON.stringify({action:'searchPR',PR:pr})
-  });
-  const j = await r.json();
-  hideLoading();
-
-  if(j.status!=='success') return alert('PR not found');
-
-  originalData = {...j.data};
-  document.querySelectorAll('[data-field]').forEach(el=>{
-    let val = j.data[el.dataset.field] || '';
-    if(el.type === 'date') val = formatDateForInput(val);
-    if(el.classList.contains('money')) val = formatMoney(String(val));
-    el.value = val;
-  });
-}
-
-function newPR(){
-  clearForm();
-  editMode();
-}
+function newPR(){clearForm();editMode();}
 
 function editMode(){
   scrollTop();
   formCard.classList.remove('readonly');
-
-  if(prField.value){
-    prField.classList.add('pr-locked');
-  }
-
+  if(prField.value) prField.classList.add('pr-locked');
   editBtn.classList.add('hidden');
   saveBtn.classList.remove('hidden');
   cancelBtn.classList.remove('hidden');
@@ -492,11 +307,11 @@ function editMode(){
 }
 
 function cancelChanges(){
-  document.querySelectorAll('[data-field]').forEach(el=>{
-    let val = originalData[el.dataset.field] || '';
-    if(el.type === 'date') val = formatDateForInput(val);
-    if(el.classList.contains('money')) val = formatMoney(String(val));
-    el.value = val;
+  document.querySelectorAll('[data-field]').forEach(function(el){
+    var val=originalData[el.dataset.field]||'';
+    if(el.type==='date') val=formatDateForInput(val);
+    if(el.classList.contains('money')) val=formatMoney(String(val));
+    el.value=val;
   });
   resetView();
 }
@@ -505,95 +320,111 @@ function resetView(){
   scrollTop();
   formCard.classList.add('readonly');
   prField.classList.remove('pr-locked');
-
   editBtn.classList.remove('hidden');
   saveBtn.classList.add('hidden');
   cancelBtn.classList.add('hidden');
   deleteBtn.classList.add('hidden');
+
+  // reset save btn
+  var sp=document.getElementById('spSave');
+  var ck=document.getElementById('ckSave');
+  var cp=document.getElementById('cpSave');
+  var tx=document.getElementById('txSave');
+  sp.style.display='none'; ck.style.display='none';
+  cp.classList.remove('drawn'); tx.textContent='Save';
+  saveBtn.classList.remove('success-state'); saveBtn.disabled=false;
+
+  // reset delete btn
+  var spD=document.getElementById('spDelete');
+  var ckD=document.getElementById('ckDelete');
+  var cpD=document.getElementById('cpDelete');
+  var txD=document.getElementById('txDelete');
+  spD.style.display='none'; ckD.style.display='none';
+  cpD.classList.remove('drawn'); txD.textContent='Delete';
+  deleteBtn.classList.remove('success-state'); deleteBtn.disabled=false;
 }
 
 /* ===== SAVE ===== */
-async function saveChanges(){
-  const payload = {
-    action: 'savePR',
-    data: {},
-    user: 'WEB'
-  };
+function saveChanges(){
+  var sp=document.getElementById('spSave');
+  var ck=document.getElementById('ckSave');
+  var cp=document.getElementById('cpSave');
+  var tx=document.getElementById('txSave');
 
-  document.querySelectorAll('[data-field]').forEach(el=>{
-    let value = el.value;
-    if(el.classList.contains('money')){
-      value = value.replace(/,/g,'');
-    }
-    payload.data[el.dataset.field] = value;
+  saveBtn.disabled=true; sp.style.display='block';
+  tx.textContent='Saving...'; hideAllMsgs();
+
+  var payload={action:'savePR',data:{},user:'WEB'};
+  document.querySelectorAll('[data-field]').forEach(function(el){
+    var value=el.value;
+    if(el.classList.contains('money')) value=value.replace(/,/g,'');
+    payload.data[el.dataset.field]=value;
   });
 
-  showLoading('Saving...');
-  const r = await fetch(API,{
-  method:'POST',
-  body: JSON.stringify(payload)
-});
-
-
-  const j = await r.json();
-  hideLoading();
-
-  if(j.status !== 'success'){
-    alert('Save failed');
-    return;
-  }
-
-  originalData = {...payload.data};
-  resetView();
-  alert('Saved successfully');
+  fetch(API,{method:'POST',body:JSON.stringify(payload)})
+    .then(function(r){return r.json();})
+    .then(function(j){
+      sp.style.display='none';
+      if(j.status!=='success'){
+        saveBtn.disabled=false; tx.textContent='Save';
+        shakeBtn(saveBtn); showPulse('msgSaveFail');
+        return;
+      }
+      saveBtn.classList.add('success-state');
+      ck.style.display='block';
+      setTimeout(function(){cp.classList.add('drawn');},60);
+      tx.textContent='Saved!';
+      originalData={...payload.data};
+      showPulse('msgSaveOk');
+      setTimeout(function(){resetView();},1500);
+    })
+    .catch(function(){
+      sp.style.display='none'; saveBtn.disabled=false; tx.textContent='Save';
+      shakeBtn(saveBtn); showPulse('msgSaveFail');
+    });
 }
-
 
 /* ===== DELETE ===== */
-async function deletePR(){
+function deletePR(){
   if(!prField.value) return;
-
   if(!confirm('Are you sure you want to delete this PR?')) return;
 
-  showLoading('Deleting...');
-  const r = await fetch(API,{
-    method:'POST',
-    body:JSON.stringify({
-      action:'deletePR',
-      PR: prField.value
+  var sp=document.getElementById('spDelete');
+  var ck=document.getElementById('ckDelete');
+  var cp=document.getElementById('cpDelete');
+  var tx=document.getElementById('txDelete');
+
+  deleteBtn.disabled=true; sp.style.display='block';
+  tx.textContent='Deleting...'; hideAllMsgs();
+
+  fetch(API,{method:'POST',body:JSON.stringify({action:'deletePR',PR:prField.value})})
+    .then(function(r){return r.json();})
+    .then(function(j){
+      sp.style.display='none';
+      if(j.status!=='success'){
+        deleteBtn.disabled=false; tx.textContent='Delete';
+        shakeBtn(deleteBtn); showPulse('msgDeleteFail');
+        return;
+      }
+      deleteBtn.classList.add('success-state');
+      ck.style.display='block';
+      setTimeout(function(){cp.classList.add('drawn');},60);
+      tx.textContent='Deleted!';
+      showPulse('msgDeleteOk');
+      setTimeout(function(){clearForm();resetView();},1500);
     })
-  });
-  const j = await r.json();
-  hideLoading();
-
-  if(j.status !== 'success'){
-    alert('Delete failed');
-    return;
-  }
-
-  clearForm();
-  resetView();
-  alert('PR deleted successfully');
+    .catch(function(){
+      sp.style.display='none'; deleteBtn.disabled=false; tx.textContent='Delete';
+      shakeBtn(deleteBtn); showPulse('msgDeleteFail');
+    });
 }
 
-function exportToPDF() {
-
-  const footer = document.getElementById('pdfFooter');
-  const now = new Date();
-
-  footer.innerText =
-    'Exported on: ' +
-    now.toLocaleDateString() +
-    ' ' +
-    now.toLocaleTimeString();
-
+function exportToPDF(){
+  var footer=document.getElementById('pdfFooter');
+  var now=new Date();
+  footer.innerText='Exported on: '+now.toLocaleDateString()+' '+now.toLocaleTimeString();
   window.print();
 }
-
-  
 </script>
-
-<div class="pdf-footer" id="pdfFooter"></div>
-
 </body>
 </html>
