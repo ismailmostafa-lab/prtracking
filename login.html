@@ -3,235 +3,122 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-
 <title>Enterprise Project Management — PR Tracking System</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-:root{
-  --we-purple:#6f2f90;
-  --muted:#6b6b6b;
-  --bg:#f4f1fb;
-  --card:#fff;
-  --accent:#00a3e0;
-
-  --btn-start:#A666B0; 
-  --btn-end:#573B92;
-}
-
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-html,body{
-  margin:0;
-  background:var(--bg);
-  font-family:'Cairo',sans-serif;
-  animation:fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(10px);}
-  to{opacity:1; transform:none;}
-}
-
-/* ================= HEADER BOX ================= */
-.header-box{
-  width:100%;
-  max-width:420px;
-  margin:26px auto 0 auto;
-  background:linear-gradient(135deg, var(--btn-start), var(--btn-end));
-  padding:26px 16px 30px 16px;
-  border-radius:20px;
-  text-align:center;
-  color:#fff;
-  box-shadow:0 6px 20px rgba(111,47,144,0.22);
-}
-
-.header-title{
-  font-size:22px;
-  font-weight:700;
-  letter-spacing:0.2px;
-}
-
-.header-sub{
-  margin-top:6px;
-  font-size:15px;
-  opacity:0.92;
-}
-
-/* ================= LAYOUT ================= */
-.wrap{
-  display:flex;
-  justify-content:center;
-  padding:22px;
-  margin-top:20px;
-}
-
-.card{
-  width:100%;
-  max-width:420px;
-  background:var(--card);
-  border-radius:20px;
-  padding:26px;
-  box-shadow:0 8px 28px rgba(0,0,0,0.08);
-}
-
-/* ================= INPUTS ================= */
-.label{
-  font-size:14px;
-  color:var(--muted);
-  margin-top:14px;
-}
-
-.input{
-  width:100%;
-  padding:14px 16px;
-  border-radius:12px;
-  border:1px solid #e0e0e0;
-  font-size:16px;
-  margin-top:6px;
-  transition:0.25s;
-}
-
-.input:focus{
-  outline:none;
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(0,163,224,0.35);
-}
-
-/* ================= BUTTON ================= */
-.btn{
-  width:100%;
-  margin-top:22px;
-  padding:16px;
-  font-size:17px;
-  color:#fff;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg, var(--btn-start), var(--btn-end));
-  box-shadow:
-    0 6px 14px rgba(111,47,144,0.30),
-    0 3px 6px rgba(0,0,0,0.18),
-    inset 0 2px 4px rgba(255,255,255,0.22);
-  cursor:pointer;
-  transition:0.18s ease;
-}
-
-.btn:active{
-  transform:scale(0.96);
-  box-shadow:
-    0 3px 8px rgba(111,47,144,0.25),
-    0 2px 4px rgba(0,0,0,0.15),
-    inset 0 1px 3px rgba(255,255,255,0.20);
-}
-
-/* ================= TEXT ================= */
-.msg{
-  height:22px;
-  text-align:center;
-  font-weight:600;
-  font-size:14px;
-  margin-top:12px;
-}
-
-.footer-note{
-  font-size:12px;
-  color:#9a9a9a;
-  margin-top:14px;
-  text-align:center;
-}
+:root{--muted:#6b6b6b;--bg:#f4f1fb;--card:#fff;--accent:#00a3e0;--btn-start:#A666B0;--btn-end:#573B92;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+html,body{background:var(--bg);font-family:'Cairo',sans-serif;animation:fadeIn 0.4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.header-box{width:100%;max-width:420px;margin:26px auto 0 auto;background:linear-gradient(135deg,var(--btn-start),var(--btn-end));padding:26px 16px 30px 16px;border-radius:20px;text-align:center;color:#fff;box-shadow:0 6px 20px rgba(111,47,144,0.22);}
+.header-title{font-size:22px;font-weight:700;-webkit-animation:fadeDown 0.6s cubic-bezier(0.22,1,0.36,1) both;animation:fadeDown 0.6s cubic-bezier(0.22,1,0.36,1) both;}
+.header-sub{margin-top:6px;font-size:15px;opacity:0.92;-webkit-animation:fadeDown 0.6s cubic-bezier(0.22,1,0.36,1) 0.15s both;animation:fadeDown 0.6s cubic-bezier(0.22,1,0.36,1) 0.15s both;}
+@-webkit-keyframes fadeDown{from{opacity:0;-webkit-transform:translateY(-18px);}to{opacity:1;-webkit-transform:translateY(0);}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px);}to{opacity:1;transform:translateY(0);}}
+.wrap{display:flex;justify-content:center;padding:22px;margin-top:20px;}
+.card{width:100%;max-width:420px;background:var(--card);border-radius:20px;padding:26px;box-shadow:0 8px 28px rgba(0,0,0,0.08);}
+.label{display:block;font-size:14px;color:var(--muted);margin-top:14px;}
+.input{display:block;width:100%;padding:14px 16px;border-radius:12px;border:1px solid #e0e0e0;font-size:16px;font-family:'Cairo',sans-serif;margin-top:6px;transition:0.25s;background:#fff;color:#111;}
+.input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,163,224,0.25);}
+.btn{display:block;width:100%;margin-top:22px;padding:0;height:54px;font-size:17px;font-family:'Cairo',sans-serif;font-weight:600;color:#fff;border:none;border-radius:14px;background:linear-gradient(135deg,var(--btn-start),var(--btn-end));box-shadow:0 6px 14px rgba(111,47,144,0.30),0 3px 6px rgba(0,0,0,0.18);cursor:pointer;position:relative;overflow:hidden;-webkit-appearance:none;}
+.btn:active{transform:scale(0.96);}
+.btn:disabled{opacity:0.75;cursor:not-allowed;}
+.btn.success{background:linear-gradient(135deg,#2e7d32,#1b5e20)!important;}
+.btn-inner{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;gap:8px;height:100%;width:100%;}
+.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,0.35);border-top-color:#fff;border-radius:50%;-webkit-animation:spin 0.7s linear infinite;animation:spin 0.7s linear infinite;display:none;-webkit-flex-shrink:0;flex-shrink:0;}
+@-webkit-keyframes spin{to{-webkit-transform:rotate(360deg);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.check-wrap{display:none;width:22px;height:22px;-webkit-flex-shrink:0;flex-shrink:0;}
+.check-wrap svg{width:22px;height:22px;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.check-path{stroke-dasharray:24;stroke-dashoffset:24;-webkit-transition:stroke-dashoffset 0.35s ease 0.1s;transition:stroke-dashoffset 0.35s ease 0.1s;}
+.check-path.drawn{stroke-dashoffset:0;}
+@-webkit-keyframes shake{0%,100%{-webkit-transform:translateX(0);}20%{-webkit-transform:translateX(-8px);}40%{-webkit-transform:translateX(8px);}60%{-webkit-transform:translateX(-5px);}80%{-webkit-transform:translateX(5px);}}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.shake{-webkit-animation:shake 0.4s ease!important;animation:shake 0.4s ease!important;}
+.pulse-msg-warn,.pulse-msg{display:none;text-align:center;margin-top:10px;font-size:14px;font-weight:700;-webkit-animation:pulseText 0.5s ease;animation:pulseText 0.5s ease;}
+.pulse-msg-warn{color:#e65100;}
+.pulse-msg{color:#c62828;}
+@-webkit-keyframes pulseText{0%{opacity:0;-webkit-transform:scale(0.7);}60%{-webkit-transform:scale(1.1);}100%{opacity:1;-webkit-transform:scale(1);}}
+@keyframes pulseText{0%{opacity:0;transform:scale(0.7);}60%{transform:scale(1.1);}100%{opacity:1;transform:scale(1);}}
+.pulse-icon-warn,.pulse-icon-wrap{width:44px;height:44px;border-radius:50%;display:-webkit-box;display:-webkit-flex;display:flex;-webkit-box-align:center;-webkit-align-items:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;justify-content:center;margin:0 auto 6px auto;-webkit-animation:pulsering 0.6s ease 0.1s;animation:pulsering 0.6s ease 0.1s;}
+.pulse-icon-warn{background:#fff3e0;}
+.pulse-icon-wrap{background:#ffebee;}
+@-webkit-keyframes pulsering{0%{-webkit-transform:scale(0.5);}70%{-webkit-transform:scale(1.15);}100%{-webkit-transform:scale(1);}}
+@keyframes pulsering{0%{transform:scale(0.5);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+.msg-success{display:none;text-align:center;font-size:14px;font-weight:700;color:#2e7d32;margin-top:12px;}
+.footer-note{font-size:12px;color:#9a9a9a;margin-top:14px;text-align:center;}
 </style>
 </head>
-
 <body>
-
-<!-- HEADER -->
 <div class="header-box">
   <div class="header-title">Enterprise Project Management</div>
   <div class="header-sub">PR Tracking System</div>
 </div>
-
-<!-- CARD -->
 <main class="wrap">
   <section class="card">
-
-    <!-- ✅ FORM added -->
-    <form onsubmit="login(); return false;">
-
-      <label class="label" for="userid">ID</label>
-      <input id="userid" class="input" type="text" autocomplete="username" inputmode="numeric">
-
-      <label class="label" for="password">Password</label>
-      <input id="password" class="input" type="password" autocomplete="current-password">
-
-      <button class="btn" type="submit">Login</button>
-
-    </form>
-
-    <div id="msg" class="msg"></div>
-
-    <div class="footer-note">
-      Enterprise Project Management | Large & Mega Projects Unit
+    <label class="label" for="userid">ID</label>
+    <input id="userid" class="input" type="text" autocomplete="username" inputmode="numeric">
+    <label class="label" for="password">Password</label>
+    <input id="password" class="input" type="password" autocomplete="current-password">
+    <button class="btn" id="loginBtn" onclick="login()">
+      <div class="btn-inner">
+        <div class="spinner" id="spinner"></div>
+        <div class="check-wrap" id="checkWrap"><svg viewBox="0 0 22 22"><polyline class="check-path" id="checkPath" points="4,11 9,16 18,6"/></svg></div>
+        <span id="btnText">Login</span>
+      </div>
+    </button>
+    <div id="msgWarn" class="pulse-msg-warn">
+      <div class="pulse-icon-warn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e65100" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      Please fill all fields
     </div>
-
+    <div id="msgErr" class="pulse-msg">
+      <div class="pulse-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c62828" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      Invalid ID or Password
+    </div>
+    <div id="msgConn" class="pulse-msg">
+      <div class="pulse-icon-wrap"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c62828" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0119 12.55M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0122.56 9M1.42 9a15.91 15.91 0 014.7-2.88M12 20h.01"/></svg></div>
+      Connection Error
+    </div>
+    <div id="msgSuccess" class="msg-success"></div>
+    <div class="footer-note">Enterprise Project Management | Large &amp; Mega Projects Unit</div>
   </section>
 </main>
-
 <script>
-const API = "https://script.google.com/macros/s/AKfycbwdEELdIbHmxPGlRFtCqKZ-gcqxqoi4g1WLx0MnLwK3N2wlufS8_2C9NmUDiVnxTCk9/exec";
-
-if(localStorage.getItem('ID')) {
-  location.href = 'trackingsystem.html';
+var API = "https://script.google.com/macros/s/AKfycbwdEELdIbHmxPGlRFtCqKZ-gcqxqoi4g1WLx0MnLwK3N2wlufS8_2C9NmUDiVnxTCk9/exec";
+if(localStorage.getItem('ID')) location.href='direction.html';
+var loginBtn=document.getElementById('loginBtn');
+var spinner=document.getElementById('spinner');
+var checkWrap=document.getElementById('checkWrap');
+var checkPath=document.getElementById('checkPath');
+var btnText=document.getElementById('btnText');
+var msgWarn=document.getElementById('msgWarn');
+var msgErr=document.getElementById('msgErr');
+var msgConn=document.getElementById('msgConn');
+var msgSuccess=document.getElementById('msgSuccess');
+function hideAllMsgs(){msgWarn.style.display='none';msgErr.style.display='none';msgConn.style.display='none';msgSuccess.style.display='none';}
+function showPulse(el){el.style.display='none';void el.offsetWidth;el.style.display='block';}
+function setLoading(){loginBtn.disabled=true;spinner.style.display='block';checkWrap.style.display='none';btnText.textContent='Checking...';btnText.style.opacity='0.75';hideAllMsgs();}
+function setSuccess(){spinner.style.display='none';loginBtn.classList.add('success');checkWrap.style.display='block';setTimeout(function(){checkPath.classList.add('drawn');},60);btnText.textContent='Welcome!';btnText.style.opacity='1';hideAllMsgs();msgSuccess.textContent='Redirecting...';msgSuccess.style.display='block';}
+function setError(type){spinner.style.display='none';checkWrap.style.display='none';loginBtn.classList.remove('success');btnText.textContent='Login';btnText.style.opacity='1';loginBtn.disabled=false;loginBtn.classList.remove('shake');void loginBtn.offsetWidth;loginBtn.classList.add('shake');hideAllMsgs();if(type==='warn')showPulse(msgWarn);else if(type==='err')showPulse(msgErr);else if(type==='conn')showPulse(msgConn);}
+function login(){
+  var id=document.getElementById('userid').value.trim();
+  var pass=document.getElementById('password').value.trim();
+  if(!id||!pass){setError('warn');return;}
+  setLoading();
+  fetch(API,{method:'POST',body:JSON.stringify({action:'login',ID:id,password:pass})})
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(j.status==='success'){
+        localStorage.setItem('ID',j.ID);
+        localStorage.setItem('name',j.name);
+        localStorage.setItem('role',j.role);
+        setSuccess();
+        setTimeout(function(){location.href='direction.html';},1300);
+      } else {setError('err');}
+    })
+    .catch(function(){setError('conn');});
 }
-
-async function login(){
-  const id = document.getElementById('userid').value.trim();
-  const pass = document.getElementById('password').value.trim();
-  const msg = document.getElementById('msg');
-
-  if(!id || !pass){
-    msg.style.color='red';
-    msg.textContent='Please fill all fields';
-    return;
-  }
-
-  msg.style.color='#666';
-  msg.textContent='Checking...';
-
-  try{
-    const r = await fetch(API,{
-      method:'POST',
-      body:JSON.stringify({
-        action:'login',
-        ID:id,
-        password:pass
-      })
-    });
-
-    const j = await r.json();
-
-    if(j.status === 'success'){
-      localStorage.setItem('ID', j.ID);
-      localStorage.setItem('name', j.name);
-      localStorage.setItem('role', j.role);
-
-      msg.style.color='green';
-      msg.textContent='Login successful';
-
-      setTimeout(()=>{
-        location.href='direction.html';
-      },300);
-
-    }else{
-      msg.style.color='red';
-      msg.textContent = 'ERROR: ' + JSON.stringify(j);
-    }
-
-  }catch(e){
-    msg.style.color='red';
-    msg.textContent='Connection Error';
-  }
-}
+document.addEventListener('keydown',function(e){if(e.key==='Enter')login();});
 </script>
-
 </body>
 </html>
