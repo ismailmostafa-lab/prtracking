@@ -205,7 +205,7 @@ body.pdf-mode .pdf-footer{display:block;position:relative;margin-top:30px;text-a
 </div>
 
 <div class="actions">
-  <button class="action-btn" id="editBtn" onclick="editMode()">Edit</button>
+  <button class="action-btn" id="editBtn" onclick="editMode()" disabled style="opacity:0.5;cursor:not-allowed;">Edit</button>
   <button class="action-btn hidden" id="saveBtn" onclick="saveChanges()">
     <div class="spinner" id="spSave"></div>
     <div class="check-wrap" id="ckSave"><svg viewBox="0 0 22 22"><polyline class="check-path" id="cpSave" points="4,11 9,16 18,6"/></svg></div>
@@ -294,7 +294,14 @@ document.querySelectorAll('.money').forEach(function(el){
 });
 
 function scrollTop(){window.scrollTo({top:0,behavior:'smooth'});}
-function clearForm(){document.querySelectorAll('[data-field]').forEach(function(el){el.value='';});prField.classList.remove('pr-locked');clearFieldErrors();}
+function clearForm(){
+  document.querySelectorAll('[data-field]').forEach(function(el){el.value='';});
+  prField.classList.remove('pr-locked');
+  clearFieldErrors();
+  editBtn.disabled=true;
+  editBtn.style.opacity='0.5';
+  editBtn.style.cursor='not-allowed';
+}
 
 /* ===== SEARCH ===== */
 function searchPR(){
@@ -330,6 +337,10 @@ function searchPR(){
         if(el.classList.contains('money')) val=formatMoney(String(val));
         el.value=val;
       });
+      // تفعيل Edit بعد ما في داتا
+      editBtn.disabled=false;
+      editBtn.style.opacity='1';
+      editBtn.style.cursor='pointer';
       setTimeout(function(){
         btn.classList.remove('success-state');
         ck.style.display='none'; cp.classList.remove('drawn');
@@ -370,6 +381,9 @@ function resetView(){
   formCard.classList.add('readonly');
   prField.classList.remove('pr-locked');
   editBtn.classList.remove('hidden');
+  editBtn.disabled=false;
+  editBtn.style.opacity='1';
+  editBtn.style.cursor='pointer';
   saveBtn.classList.add('hidden');
   cancelBtn.classList.add('hidden');
   deleteBtn.classList.add('hidden');
